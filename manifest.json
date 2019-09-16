@@ -1,0 +1,6 @@
+{
+  "name": "ros-web-components",
+  "short_name": "ros-web-components",
+  "start_url": "/",
+  "display": "standalone"
+}
