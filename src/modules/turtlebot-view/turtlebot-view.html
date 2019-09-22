@@ -1,0 +1,61 @@
+<link rel="import" href="../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../bower_components/ros-rviz/ros-rviz.html">
+<link rel="import" href="./components/turtlebot-controller.html">
+
+<dom-module id="turtlebot-view">
+    <template>
+        <style>
+            :host {
+                display: block;
+                height: 100vh;
+                margin: 0;
+            }
+            turtlebot-controller {
+                position: absolute;
+                bottom: 8px;
+                right: 16px;
+            }
+        </style>
+
+        <!-- Get ROS Web socket connection -->
+        <ros-websocket auto ros="{{ros}}"
+                       url="{{url}}"
+                       on-connection="_handleConnection"
+                       on-close="_handleClose"
+                       on-error="_handleError"></ros-websocket>
+
+        <!-- Initialize ROS RViz DOM -->
+        <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
+
+        <!-- Movement controller -->
+        <turtlebot-controller></turtlebot-controller>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class TurtlebotView extends Polymer.Element {
+            static get is() { return 'turtlebot-view'; }
+            static get properties() {
+                return {};
+            }
+            _handleConnection() {
+                this.status = 'Connected to the websocket server.';
+                console.log(this.status);
+            }
+            _handleClose() {
+                this.status = 'Closed connection to the websocket server.';
+                console.log(this.status);
+            }
+            _handleError() {
+                this.status = 'Error connecting to the websocket server.';
+                console.log(this.status);
+            }
+        }
+
+        window.customElements.define(TurtlebotView.is, TurtlebotView);
+    </script>
+</dom-module>
