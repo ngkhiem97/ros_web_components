@@ -1,0 +1,65 @@
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="ros-core">
+  <template>
+    <style is="custom-style" include="iron-flex"></style>
+    <style>
+      :host {
+        display: block;
+        margin: 0;
+        width: 200px;
+      }
+    </style>
+
+    <!-- Connect to ROS Web Socket node -->
+    <ros-websocket auto id="ros" ros="{{ros}}"
+                   url="{{url}}"
+                   on-connection="_handleConnection"
+                   on-close="_handleClose"
+                   on-error="_handleError"
+    ></ros-websocket>
+
+    <paper-card id="ros-core" class="layout vertical">
+      <div class="card-content">
+        <p>{{status}}</p>
+      </div>
+    </paper-card>
+
+  </template>
+
+  <script>
+      /**
+       * @customElement
+       * @polymer
+       */
+      class ROSCore extends Polymer.Element {
+          static get is() { return 'ros-core'; }
+          static get properties() {
+              return {};
+          }
+          ready() {
+              super.ready();
+              this.status     = "ROS Core not running";
+              this.statusIcon = "brightness-1";
+              this.hostname   = window.location.hostname;
+          }
+          _handleConnection() {
+              this.status       = "ROS Core running";
+              this.statusIcon   = "fiber-manual-record";
+          }
+          _handleClose() {
+              this.status       = "ROS Core not running";
+              this.statusIcon   = "brightness-1";
+          }
+          _handleError() {
+              this.status       = "ROS Core not running";
+              this.statusIcon   = "brightness-1";
+          }
+      }
+      window.customElements.define(ROSCore.is, ROSCore);
+  </script>
+</dom-module>

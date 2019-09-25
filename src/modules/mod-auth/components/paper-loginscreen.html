@@ -244,7 +244,18 @@ Custom property | Description | Default
                 const vUserInput = this.$.userInput.validate();
                 const vPassInput = this.$.passInput.validate();
                 if (vUserInput && vPassInput) {
-                    this.dispatchEvent(new CustomEvent('login-btn-click', { bubbles: true, composed: true }));
+                    // this.dispatchEvent(new CustomEvent('login-btn-click', { bubbles: true, composed: true }));
+
+                    /** Temporary bypass account **/
+                    if (this.username === 'admin' && this.password === 'admin') {
+                        window.history.pushState({}, null, '/dashboard');
+                    } else {
+                        this.userInputErrMsg     = "Wrong username";
+                        this.passwordInputErrMsg = "Wrong password";
+
+                        this.$.userInput.invalid = true;
+                        this.$.passInput.invalid = true;
+                    }
                 }
             }
         }
