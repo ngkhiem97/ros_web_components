@@ -1,5 +1,6 @@
 <link rel="import" href="../../../bower_components/ros-websocket/ros-websocket.html">
 <link rel="import" href="../../../bower_components/ros-rviz/ros-rviz.html">
+<link rel="import" href="./components/ros-core.html">
 <link rel="import" href="./components/turtlebot-controller.html">
 
 <dom-module id="mod-turtlebot">
@@ -15,6 +16,11 @@
                 bottom: 8px;
                 right: 16px;
             }
+            ros-core {
+                position: absolute;
+                bottom: 8px;
+                left: 16px;
+            }
         </style>
 
         <!-- Get ROS Web socket connection -->
@@ -29,6 +35,9 @@
 
         <!-- Movement controller -->
         <turtlebot-controller></turtlebot-controller>
+
+        <!-- ROS Core status -->
+        <ros-core></ros-core>
 
     </template>
 
