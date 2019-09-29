@@ -1,0 +1,83 @@
+<link rel="import" href="./../../../bower_components/app-route/app-location.html">
+<link rel="import" href="./../../../bower_components/app-route/app-route.html">
+<link rel="import" href="./../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./components/sidebar-nav.html">
+
+<dom-module id="mod-dashboard">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            .main-content {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                left: 60px;
+            }
+            #sidebar-nav:hover + #main-content {
+                left: 180px;
+            }
+        </style>
+
+        <!-- app-location binds to the app's URL -->
+        <app-location route="{{route}}"></app-location>
+
+        <!-- this app-route manages the top-level routes -->
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"
+        ></app-route>
+
+        <sidebar-nav id="sidebar-nav"></sidebar-nav>
+
+        <div class="main-content" id="main-content">
+            <iron-pages selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+                <h1 name="list">Header 1</h1>
+                <h2 name="maps">Header 2</h2>
+                <h3 name="systems">Header 3</h3>
+            </iron-pages>
+        </div>
+    </template>
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class ModDashboard extends Polymer.Element {
+            static get is() { return 'mod-dashboard'; }
+            static get properties() {
+                return {
+                    page:{
+                        type: String,
+                        observer: '_pageChanged'
+                    }
+                };
+            }
+            static get observers(){
+                return ['_routerChanged(routeData.page)'];
+            }
+            _routerChanged(page){
+                this.page = page || 'home';
+            }
+            _pageChanged(currentPage, oldPage){
+                switch(currentPage){
+                    case 'list':
+                        // import('./home-comp.js').then()
+                        break;
+                    case 'maps':
+                        // import('./about-comp.js').then()
+                        break;
+                    case 'systems':
+                        // import('./contact-comp.js').then()
+                        break;
+                    default:
+                        this.page = 'home';
+                }
+            }
+        }
+        window.customElements.define(ModDashboard.is, ModDashboard);
+    </script>
+</dom-module>
