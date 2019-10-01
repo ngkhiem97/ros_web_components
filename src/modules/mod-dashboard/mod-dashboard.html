@@ -2,6 +2,7 @@
 <link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="./../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="./components/sidebar-nav.html">
+<link rel="import" href="./components/turtlebot-list.html">
 
 <dom-module id="mod-dashboard">
     <template>
@@ -15,6 +16,7 @@
                 position: absolute;
                 right: 0;
                 left: 60px;
+                background: #105469;
             }
             #sidebar-nav:hover + #main-content {
                 left: 180px;
@@ -34,8 +36,8 @@
         <sidebar-nav id="sidebar-nav"></sidebar-nav>
 
         <div class="main-content" id="main-content">
-            <iron-pages selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-                <h1 name="list">Header 1</h1>
+            <iron-pages selected="[[page]]" attr-for-selected="name" selected-attribute="visible">
+                <turtlebot-list name="list">Header 1</turtlebot-list>
                 <h2 name="maps">Header 2</h2>
                 <h3 name="systems">Header 3</h3>
             </iron-pages>
@@ -52,7 +54,6 @@
                 return {
                     page:{
                         type: String,
-                        observer: '_pageChanged'
                     }
                 };
             }
@@ -61,21 +62,6 @@
             }
             _routerChanged(page){
                 this.page = page || 'home';
-            }
-            _pageChanged(currentPage, oldPage){
-                switch(currentPage){
-                    case 'list':
-                        // import('./home-comp.js').then()
-                        break;
-                    case 'maps':
-                        // import('./about-comp.js').then()
-                        break;
-                    case 'systems':
-                        // import('./contact-comp.js').then()
-                        break;
-                    default:
-                        this.page = 'home';
-                }
             }
         }
         window.customElements.define(ModDashboard.is, ModDashboard);
