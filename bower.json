@@ -6,6 +6,7 @@
     "paper-card": "PolymerElements/paper-card#2.0",
     "app-route": "PolymerElements/app-route#2.0.0",
     "paper-tabs": "PolymerElements/paper-tabs#2.0.0",
+    "paper-slider": "PolymerElements/paper-slider#2.0",
     "iron-pages": "PolymerElements/iron-pages#2.0.0",
     "paper-progress": "PolymerElements/paper-progress#2.0",
     "ros-rviz": "jstnhuang/ros-rviz#^3.1.1",

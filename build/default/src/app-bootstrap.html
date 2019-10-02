@@ -17,10 +17,7 @@
         <app-location route="{{route}}"></app-location>
 
         <!-- this app-route manages the top-level routes -->
-        <app-route route="{{route}}"
-                   pattern="/:page"
-                   data="{{routeData}}"
-                   tail="{{subroute}}">
+        <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
         </app-route>
 
         <!-- Routing elements -->
@@ -40,36 +37,41 @@
 
     </template>
 
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class AppBootstrap extends Polymer.Element {
-            static get is() { return 'app-bootstrap'; }
-            static get properties() {
-                return {
-                    page:{
-                        type: String,
-                        observer: '_pageChanged'
-                    }
-                };
-            }
-            static get observers(){
-                return ['_routerChanged(routeData.page)'];
-            }
-            _routerChanged(page){
-                console.log(this.route, 'route');
-		console.log(this.page, 'page');
-		console.log(this.subroute, 'subroute');
-                this.page = page || 'login';
-            }
-            _pageChanged(page, oldPage) {
-                console.log(page, 'page');
-                console.log(oldPage, 'old page');
-            }
-        }
+    <script>/**
+ * @customElement
+ * @polymer
+ */
+class AppBootstrap extends Polymer.Element {
+  static get is() {
+    return 'app-bootstrap';
+  }
 
-        window.customElements.define(AppBootstrap.is, AppBootstrap);
-    </script>
+  static get properties() {
+    return {
+      page: {
+        type: String,
+        observer: '_pageChanged'
+      }
+    };
+  }
+
+  static get observers() {
+    return ['_routerChanged(routeData.page)'];
+  }
+
+  _routerChanged(page) {
+    console.log(this.route, 'route');
+    console.log(this.page, 'page');
+    console.log(this.subroute, 'subroute');
+    this.page = page || 'login';
+  }
+
+  _pageChanged(page, oldPage) {
+    console.log(page, 'page');
+    console.log(oldPage, 'old page');
+  }
+
+}
+
+window.customElements.define(AppBootstrap.is, AppBootstrap);</script>
 </dom-module>

@@ -50,52 +50,56 @@
         </style>
 
         <!-- HTML goes here-->
-        <table><h1>Turtlebot list</h1>
+        <h1>Turtlebot list</h1><table>
             <thead>
             <tr>
                 <th>ID
-                <th>Name
-                <th>Model
-                <th>SLAM
-            </thead>
+                </th><th>Name
+                </th><th>Model
+                </th><th>SLAM
+            </th></tr></thead>
             <tbody>
             <tr>
                 <td>1
-                <td>tb_01
-                <td>Burger
-                <td><paper-button class="turtlebot-connect" on-click="_connect">connect</paper-button>
-            <tr>
+                </td><td>tb_01
+                </td><td>Burger
+                </td><td><paper-button class="turtlebot-connect" on-click="_connect">connect</paper-button>
+            </td></tr><tr>
                 <td>2
-                <td>tb_02
-                <td>Burger
-                <td><paper-button class="turtlebot-connect">connect</paper-button>
-            <tr>
+                </td><td>tb_02
+                </td><td>Burger
+                </td><td><paper-button class="turtlebot-connect">connect</paper-button>
+            </td></tr><tr>
                 <td>3
-                <td>tb_03
-                <td>Burger
-                <td><paper-button class="turtlebot-connect">connect</paper-button>
-            <tr class="disabled">
+                </td><td>tb_03
+                </td><td>Burger
+                </td><td><paper-button class="turtlebot-connect">connect</paper-button>
+            </td></tr><tr class="disabled">
                 <td>4
-                <td>tb_04
-                <td>Burger
-            </tbody>
+                </td><td>tb_04
+                </td><td>Burger
+            </td></tr></tbody>
         </table>
     </template>
 
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class TurtlebotList extends Polymer.Element {
-            static get is() { return 'turtlebot-list'; }
-            static get properties() {
-                return {};
-            }
-	    _connect() {
-	    	window.location.href = '/turtlebot';
-	    }
-        }
-        window.customElements.define(TurtlebotList.is, TurtlebotList);
-    </script>
+    <script>/**
+ * @customElement
+ * @polymer
+ */
+class TurtlebotList extends Polymer.Element {
+  static get is() {
+    return 'turtlebot-list';
+  }
+
+  static get properties() {
+    return {};
+  }
+
+  _connect() {
+    window.location.href = '/turtlebot';
+  }
+
+}
+
+window.customElements.define(TurtlebotList.is, TurtlebotList);</script>
 </dom-module>

@@ -168,17 +168,20 @@
         </div>
     </template>
 
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class SidebarNav extends Polymer.Element {
-            static get is() { return 'sidebar-nav'; }
-            static get properties() {
-                return {};
-            }
-        }
-        window.customElements.define(SidebarNav.is, SidebarNav);
-    </script>
+    <script>/**
+ * @customElement
+ * @polymer
+ */
+class SidebarNav extends Polymer.Element {
+  static get is() {
+    return 'sidebar-nav';
+  }
+
+  static get properties() {
+    return {};
+  }
+
+}
+
+window.customElements.define(SidebarNav.is, SidebarNav);</script>
 </dom-module>
