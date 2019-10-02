@@ -24,22 +24,22 @@
         </style>
 
         <!-- app-location binds to the app's URL -->
-        <app-location route="{{route}}"></app-location>
+        <app-location route="[[route]]"></app-location>
 
         <!-- this app-route manages the top-level routes -->
         <app-route
-                route="{{route}}"
-                pattern="/:page"
+                route="[[route]]"
+                pattern="/:view"
                 data="{{routeData}}"
         ></app-route>
 
         <sidebar-nav id="sidebar-nav"></sidebar-nav>
 
         <div class="main-content" id="main-content">
-            <iron-pages selected="[[page]]" attr-for-selected="name" selected-attribute="visible">
+            <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
                 <turtlebot-list name="list">Header 1</turtlebot-list>
-                <h2 name="maps">Header 2</h2>
-                <h3 name="systems">Header 3</h3>
+                <map-list name="maps">Header 2</map-list>
+                <ros-system name="systems">Header 3</ros-system>
             </iron-pages>
         </div>
     </template>
@@ -52,16 +52,23 @@
             static get is() { return 'mod-dashboard'; }
             static get properties() {
                 return {
-                    page:{
+                    view:{
                         type: String,
+                        observer: '_pageChanged'
                     }
                 };
             }
             static get observers(){
+                console.log(this.route, 'route');
                 return ['_routerChanged(routeData.page)'];
             }
             _routerChanged(page){
-                this.page = page || 'home';
+                this.page = page || 'list';
+            }
+            _pageChanged(page, oldPage) {
+                console.log(this.route, 'route');
+                console.log(page, 'page');
+                console.log(oldPage, 'old page');
             }
         }
         window.customElements.define(ModDashboard.is, ModDashboard);
