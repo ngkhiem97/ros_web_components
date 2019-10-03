@@ -1,6 +1,7 @@
 <link rel="import" href="./../../../bower_components/app-route/app-location.html">
 <link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="./../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./components/map-gallery.html">
 <link rel="import" href="./components/sidebar-nav.html">
 <link rel="import" href="./components/turtlebot-list.html">
 
@@ -21,6 +22,15 @@
             #sidebar-nav:hover + #main-content {
                 left: 180px;
             }
+            map-gallery {
+                width: 80%;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+            ros-core {
+                margin-top: 10px;
+                margin-left: 10px;
+            }
         </style>
 
         <!-- this app-route manages the top-level routes -->
@@ -35,10 +45,8 @@
         <div class="main-content" id="main-content">
             <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
                 <turtlebot-list name="list">Header 1</turtlebot-list>
-                <!--<map-list name="maps">Header 2</map-list>-->
-                <!--<ros-system name="systems">Header 3</ros-system>-->
-		<h2 name="maps">MAPS</h2>
-		<h2 name="systems">SYSTEM</h2>
+                <map-gallery name="maps">Header 2</map-gallery>
+                <ros-core name="systems">Header 3</ros-core>
             </iron-pages>
         </div>
     </template>
@@ -69,8 +77,8 @@
             }
             _routerChanged(view){
                 this.view = view || 'list';
-		console.log(this.route, 'route');
-		console.log(this.view, 'view');
+		        console.log(this.route, 'route');
+		        console.log(this.view, 'view');
             }
             _pageChanged(page, oldPage) {
                 console.log(this.route, 'route');
