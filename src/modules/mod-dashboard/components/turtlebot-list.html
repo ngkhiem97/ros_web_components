@@ -1,3 +1,5 @@
+<link rel="import" href="../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../bower_components/ros-topic/ros-topic.html">
 <link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
 
@@ -48,6 +50,22 @@
                 background: #014055;
             }
         </style>
+
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto id="ros" ros="{{ros}}"
+                       url="{{url}}"
+                       on-connection="_handleConnection"
+                       on-close="_handleClose"
+                       on-error="_handleError"
+        ></ros-websocket>
+
+        <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
+        <ros-topic
+                id="baseTopic"
+                ros="{{ros}}"
+                topic="cmd_vel"
+                msg-type="geometry_msgs/Twist"
+        ></ros-topic>
 
         <!-- HTML goes here-->
         <table><h1>Turtlebot list</h1>
