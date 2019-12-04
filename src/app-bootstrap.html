@@ -13,22 +13,25 @@
             }
         </style>
 
-        <!-- app-location binds to the app's URL -->
+        <!-- Binds to the app's URL -->
         <app-location route="{{route}}"></app-location>
 
-        <!-- this app-route manages the top-level routes -->
+        <!-- Manages the top-level routes data -->
         <app-route route="{{route}}"
                    pattern="/:page"
                    data="{{routeData}}"
                    tail="{{subroute}}">
         </app-route>
 
-        <!-- Routing elements -->
+        <!-- URL Routing elements -->
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+
             <!-- Login view -->
             <mod-auth name="login"></mod-auth>
+
             <!-- Dashboard view -->
             <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
+
             <!-- Turtlebot view -->
             <mod-turtlebot name="turtlebot"></mod-turtlebot>
 
