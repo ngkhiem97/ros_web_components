@@ -9,11 +9,11 @@
 <link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
 
 <!--
-  `paper-loginscreen` is a material login screen, built using Polymer
+  `paper-login` is a material login screen, built using Polymer
 
 ### Example
 
-        <paper-loginscreen></paper-loginscreen>
+        <paper-login></paper-login>
 
 ### Events
 
@@ -42,7 +42,7 @@ Custom property | Description | Default
 @demo demo/index.html
 -->
 
-<dom-module id="paper-loginscreen">
+<dom-module id="paper-login">
     <template>
         <style>
             #loginForm {
@@ -137,7 +137,7 @@ Custom property | Description | Default
     </template>
     <script>
         class PaperLoginScreen extends Polymer.Element {
-            static get is() { return "paper-loginscreen" }
+            static get is() { return "paper-login" }
             static get properties() {
                 return {
                     logoImg: {

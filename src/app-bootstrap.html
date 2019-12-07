@@ -26,7 +26,7 @@
         <!-- Routing elements -->
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
             <!-- Login view -->
-            <mod-auth name="login"></mod-auth>
+            <mod-auth name="auth" route="[[subroute]]"></mod-auth>
             <!-- Dashboard view -->
             <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
             <!-- Turtlebot view -->
@@ -59,9 +59,9 @@
                 return ['_routerChanged(routeData.page)'];
             }
             _routerChanged(page){
-                console.log(this.route, 'route');
-		        console.log(this.page, 'page');
-		        console.log(this.subroute, 'subroute');
+                // console.log(this.route, 'route');
+		        // console.log(this.page, 'page');
+		        // console.log(this.subroute, 'subroute');
                 this.page = page || 'login';
             }
             _pageChanged(page, oldPage) {

@@ -1,4 +1,4 @@
-<link rel="import" href="./components/paper-loginscreen.html">
+<link rel="import" href="./components/paper-login.html">
 
 <dom-module id="mod-auth">
     <template>
@@ -6,7 +6,7 @@
             :host {
                 display: block;
             }
-            paper-loginscreen {
+            paper-login {
                 position: absolute;
                 left: 50%;
                 top: 50%;
@@ -14,7 +14,7 @@
             }
         </style>
 
-        <paper-loginscreen title="Login to" subtitle="Turtlebot dashboard"></paper-loginscreen>
+        <paper-login title="Login to" subtitle="Turtlebot dashboard"></paper-login>
     </template>
 
     <script>
@@ -29,7 +29,7 @@
             }
             ready() {
                 super.ready();
-                console.log(this.$, "this attributes");
+                // console.log(this.$, "this attributes");
             }
         }
         window.customElements.define(ModAuth.is, ModAuth);

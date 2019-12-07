@@ -38,14 +38,22 @@
                 route="[[route]]"
                 pattern="/:view"
                 data="{{routeData}}">
-	</app-route>
+	    </app-route>
 
+        <!-- side bar for iron-pages navigation -->
         <sidebar-nav id="sidebar-nav"></sidebar-nav>
 
+        <!-- dashboard content -->
         <div class="main-content" id="main-content">
             <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
+
+                <!-- display list of available turtlebot -->
                 <turtlebot-list name="list">Header 1</turtlebot-list>
+
+                <!-- display all the maps scanned by turtlebots -->
                 <map-gallery name="maps">Header 2</map-gallery>
+
+                <!-- display the information of the ros system -->
                 <ros-core name="systems">Header 3</ros-core>
             </iron-pages>
         </div>
