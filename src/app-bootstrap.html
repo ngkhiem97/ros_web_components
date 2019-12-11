@@ -23,6 +23,14 @@
                    tail="{{subroute}}">
         </app-route>
 
+        <!--
+            Authentication data
+            If authenticated, user can access to:
+                - Dashboard module [mod-dashboard]
+                - Turtlebot module [mod-turtlebot]
+        -->
+        <auth-data id="authData"></auth-data>
+
         <!-- URL Routing elements -->
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
 
@@ -32,7 +40,7 @@
             <!-- Dashboard module -->
             <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
 
-            <!-- Turtlebot view -->
+            <!-- Turtlebot module -->
             <mod-turtlebot name="turtlebot"></mod-turtlebot>
 
             <!-- Not found -->
