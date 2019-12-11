@@ -10,6 +10,35 @@
 <link rel="import" href="../../../../bower_components/paper-password-input/paper-password-input.html">
 <link rel="import" href="../../../../bower_components/paper-password-input/match-passwords-validator.html">
 
+<!--
+  `paper-signup` is a material signup screen, built using Polymer
+
+### Example
+
+        <paper-signup></paper-signup>
+
+### Events
+
+`login-btn-click` is triggered when user clicks on the login button
+
+### Styling
+
+Custom property | Description | Default
+----------------|-------------|---------
+`--login-form-background-color` | Background of the login form | `white`
+`--login-btn-background-color` | Background of the login button | `--paper-indigo-500`
+`--login-btn-raised-background-color` | Background of the login button when raised | `--paper-pink-a200`
+`--login-btn-disabled-background-color` | Background of the login button when disabled (when loading property is true) | `--paper-indigo-100`
+`--login-btn-text-color` | Text color of the login button | `white`
+`--login-error-label-color` | Text color of the error label | `--error-color`
+`--login-form` | Mixin for the login form  | `{}`
+`--login-btn` | Mixin for the login button  | `{}`
+`--login-title` | Mixin for the login title  | `{}`
+`--login-subtitle` | Mixin for the login subtitle  | `{}`
+
+@demo demo/index.html
+-->
+
 <dom-module id="paper-signup">
     <template>
         <style>
@@ -105,10 +134,10 @@
                 <h2>[[subtitle]]</h2>
                 <div id="errorMsg">[[errorMsg]]</div>
 
-                <!-- Username -->
-                <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text"
-                             label="[[userInputLabel]]" required auto-validate
-                             error-message="[[userInputErrMsg]]"></paper-input>
+                <!-- Name -->
+                <paper-input id="nameInput" value="{{name}}" disabled="[[loading]]" type="text"
+                             label="[[nameInputLabel]]" required auto-validate
+                             error-message="[[nameInputErrMsg]]"></paper-input>
 
                 <!-- Email -->
                 <paper-input id="emailInput" value="{{email}}" disabled="[[loading]]" type="text"
@@ -139,7 +168,10 @@
     </template>
     <script>
         class PaperSignUpScreen extends Polymer.Element {
-            static get is() { return "paper-signup" }
+            static get is() {
+                return "paper-signup"
+            }
+
             static get properties() {
                 return {
                     logoImg: {
@@ -165,9 +197,9 @@
                     errorMsg: String,
 
                     /**
-                     * Content of the username field
+                     * Content of the name field
                      */
-                    username: {
+                    name: {
                         type: String,
                         notify: true
                     },
@@ -205,19 +237,19 @@
                     },
 
                     /**
-                     * Placeholder of the username field
+                     * Placeholder of the name field
                      */
-                    userInputLabel: {
+                    nameInputLabel: {
                         type: String,
-                        value: "Username"
+                        value: "Name"
                     },
 
                     /**
-                     * Error message of the username field
+                     * Error message of the name field
                      */
-                    userInputErrMsg: {
+                    nameInputErrMsg: {
                         type: String,
-                        value: "Username required"
+                        value: "Name required"
                     },
 
                     /**
@@ -292,18 +324,18 @@
 
             _signUp() {
                 // Get validated fields status
-                const userInputValid        = this.$.userInput.validate();
+                const nameInputValid        = this.$.nameInput.validate();
                 const emailInputValid       = this.$.emailInput.validate();
                 const passInputValid        = this.$.passInput.validate();
                 const confirmPassInputValid = this.$.confirmPassInput.validate();
 
-                if (userInputValid && emailInputValid && passInputValid && confirmPassInputValid) {
-                    console.log('sign up button pressed');
-                    console.log(this.errorMsg);
+                if (nameInputValid && emailInputValid && passInputValid && confirmPassInputValid) {
+                    // console.log('sign up button pressed');
+                    // console.log(this.errorMsg);
 
                     // Resister to the systems
                     this.$.serviceAccount.resister({
-                        username: this.$.userInput.value,
+                        name:     this.$.nameInput.value,
                         email:    this.$.emailInput.value,
                         password: this.$.passInput.value
                     });
