@@ -15,7 +15,7 @@
         <style>
             #signUpForm {
                 width: 450px;
-                height: 520px;
+                height: 590px;
                 background: var(--login-form-background-color, white);
                 @apply --shadow-elevation-12dp;
                 @apply --login-form;
@@ -84,6 +84,10 @@
                 height: 50px;
                 width: 50px;
             }
+
+            paper-password-input {
+                display: block;
+            }
         </style>
 
         <div id="signUpForm">
@@ -100,6 +104,8 @@
                 <div id="errorMsg">[[errorMsg]]</div>
                 <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text" label="[[userInputLabel]]" required auto-validate
                              error-message="[[userInputErrMsg]]"></paper-input>
+                <paper-input id="emailInput" value="{{email}}" disabled="[[loading]]" type="text" label="[[emailInputLabel]]" required auto-validate
+                             error-message="[[emailInputErrMsg]]"></paper-input>
                 <match-passwords-validator id="match-passwords-validator" password="[[password]]"></match-passwords-validator>
                 <paper-password-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password" label="[[passwordInputLabel]]" required
                              auto-validate error-message="[[passwordInputErrMsg]]"></paper-password-input>
@@ -146,6 +152,14 @@
                     },
 
                     /**
+                     * Content of the email field
+                     */
+                    email: {
+                        type: String,
+                        notify: true
+                    },
+
+                    /**
                      * Content of the password field
                      */
                     password: {
@@ -183,6 +197,22 @@
                     userInputErrMsg: {
                         type: String,
                         value: "Username required"
+                    },
+
+                    /**
+                     * Placeholder of the email field
+                     */
+                    emailInputLabel: {
+                        type: String,
+                        value: "Email"
+                    },
+
+                    /**
+                     * Error message of the email field
+                     */
+                    emailInputErrMsg: {
+                        type: String,
+                        value: "Email required"
                     },
 
                     /**
