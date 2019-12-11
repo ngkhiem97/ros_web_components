@@ -60,7 +60,7 @@ Custom property | Description | Default
                 padding: 48px;
             }
 
-            #loginFormContent>* {
+            #loginFormContent > * {
                 margin-top: 8px;
                 margin-bottom: 8px;
             }
@@ -128,25 +128,32 @@ Custom property | Description | Default
                 <img id="logo" src="{{logoImg}}" alt="logo">
 
                 <!-- Title -->
-                <h1>[[title]] <iron-icon class="big" icon="input"></iron-icon></h1>
+                <h1>[[title]]
+                    <iron-icon class="big" icon="input"></iron-icon>
+                </h1>
 
                 <!-- Sub-title -->
                 <h2>[[subtitle]]</h2>
                 <div id="errorMsg">[[errorMsg]]</div>
 
                 <!-- Username -->
-                <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text" label="[[userInputLabel]]" required auto-validate
+                <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text"
+                             label="[[userInputLabel]]" required auto-validate
                              error-message="[[userInputErrMsg]]"></paper-input>
 
                 <!-- Password -->
-                <paper-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password" label="[[passwordInputLabel]]" required
+                <paper-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password"
+                             label="[[passwordInputLabel]]" required
                              auto-validate error-message="[[passwordInputErrMsg]]"></paper-input>
 
                 <!-- Login button -->
-                <paper-button on-click="_login" disabled="[[loading]]" id="loginBtn" raised class="indigo">[[loginBtnText]]</paper-button>
+                <paper-button on-click="_login" disabled="[[loading]]" id="loginBtn" raised class="indigo">
+                    [[loginBtnText]]
+                </paper-button>
 
                 <!-- Ajax component for login service -->
-                <service-account id="serviceAccount" on-response="_loginResponse"></service-account>
+                <service-account id="serviceAccount" on-response="_loginResponse"
+                                 on-error="_loginError"></service-account>
 
                 <a href="/auth/signup">Sign up</a>
             </div>
@@ -154,11 +161,14 @@ Custom property | Description | Default
     </template>
     <script>
         class PaperLoginScreen extends Polymer.Element {
-            static get is() { return "paper-login" }
+            static get is() {
+                return "paper-login"
+            }
+
             static get properties() {
                 return {
                     logoImg: {
-                        type: String,
+                        type:  String,
                         value: function () {
                             return this.resolveUrl("../img/logo.png");
                         }
@@ -183,7 +193,7 @@ Custom property | Description | Default
                      * Content of the username field
                      */
                     username: {
-                        type: String,
+                        type:   String,
                         notify: true
                     },
 
@@ -191,7 +201,7 @@ Custom property | Description | Default
                      * Content of the password field
                      */
                     password: {
-                        type: String,
+                        type:   String,
                         notify: true
                     },
 
@@ -199,7 +209,7 @@ Custom property | Description | Default
                      * When true, all fields are disabled and the progress bar is visible
                      */
                     loading: {
-                        type: Boolean,
+                        type:  Boolean,
                         value: false
                     },
 
@@ -207,7 +217,7 @@ Custom property | Description | Default
                      * Placeholder of the username field
                      */
                     userInputLabel: {
-                        type: String,
+                        type:  String,
                         value: "Username"
                     },
 
@@ -215,7 +225,7 @@ Custom property | Description | Default
                      * Error message of the username field
                      */
                     userInputErrMsg: {
-                        type: String,
+                        type:  String,
                         value: "Username required"
                     },
 
@@ -223,7 +233,7 @@ Custom property | Description | Default
                      * Placeholder of the password field
                      */
                     passwordInputLabel: {
-                        type: String,
+                        type:  String,
                         value: "Password"
                     },
 
@@ -231,7 +241,7 @@ Custom property | Description | Default
                      * Error message of the password field
                      */
                     passwordInputErrMsg: {
-                        type: String,
+                        type:  String,
                         value: "Password required"
                     },
 
@@ -239,7 +249,7 @@ Custom property | Description | Default
                      * Login button label
                      */
                     loginBtnText: {
-                        type: String,
+                        type:  String,
                         value: "Login"
                     },
 
@@ -273,6 +283,7 @@ Custom property | Description | Default
                 const passInputValid = this.$.passInput.validate();
 
                 if (userInputValid && passInputValid) {
+                    this.loading = true;
 
                     // Login to the systems
                     this.$.serviceAccount.login({
@@ -283,11 +294,22 @@ Custom property | Description | Default
             }
 
             _loginResponse(e) {
+                this.loading = false;
+
+                // Todo: handle response
+                console.log('whoa! request complete');
+                console.log(e.detail.response);
+            }
+
+            _loginError(e) {
+                this.loading = false;
+
                 // Todo: handle response
                 console.log('whoa! request complete');
                 console.log(e.detail.response);
             }
         }
+
         customElements.define(PaperLoginScreen.is, PaperLoginScreen);
     </script>
 </dom-module>
