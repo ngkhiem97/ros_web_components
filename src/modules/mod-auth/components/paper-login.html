@@ -7,7 +7,9 @@
 <link rel="import" href="../../../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html">
+
+<!-- Service library-->
+<link rel="import" href="../services/service-account.html">
 
 <!--
   `paper-login` is a material login screen, built using Polymer
@@ -144,14 +146,7 @@ Custom property | Description | Default
                 <paper-button on-click="_login" disabled="[[loading]]" id="loginBtn" raised class="indigo">[[loginBtnText]]</paper-button>
 
                 <!-- Ajax component for login service -->
-                <iron-ajax auto
-                           id="loginAjax"
-                           url="{{loginUrl}}"
-                           method="post"
-                           handle-as="json"
-                           content-type="application/json"
-                           on-response="loginResponse"
-                           debounce-duration="300"></iron-ajax>
+                <service-account id="serviceAccount" on-response="_loginResponse"></service-account>
 
                 <a href="/auth/signup">Sign up</a>
             </div>
@@ -259,31 +254,38 @@ Custom property | Description | Default
 
             ready() {
                 super.ready();
-                var self = this;
+
+                // If enter key pressed on the form, login the account with credentials
                 this.$.loginForm.addEventListener("keypress", (e) => {
-                    if (e.keyCode == 13) { //Todo: refactor for constant value
-                        self._login();
+                    if (e.keyCode === 13) { //Todo: refactor for constant value
+                        this._login();
                         return false;
                     }
                 });
             }
 
+            /**
+             * Login when the submit button is pressed
+             */
             _login() {
-                const vUserInput = this.$.userInput.validate();
-                const vPassInput = this.$.passInput.validate();
+                // Get validated status of fields
+                const userInputValid = this.$.userInput.validate();
+                const passInputValid = this.$.passInput.validate();
 
-                if (vUserInput && vPassInput) {
-                    this.loginUrl = "http://localhost:80/api/login"; //Todo: refactor for constant value
-                    this.$.loginAjax.body = {
-                        email: this.$.userInput.value,
+                if (userInputValid && passInputValid) {
+
+                    // Login to the systems
+                    this.$.serviceAccount.login({
+                        email:    this.$.userInput.value,
                         password: this.$.passInput.value
-                    };
-                    this.$.loginAjax.generateRequest();
+                    });
                 }
             }
 
-            loginResponse() {
+            _loginResponse(e) {
+                // Todo: handle response
                 console.log('whoa! request complete');
+                console.log(e.detail.response);
             }
         }
         customElements.define(PaperLoginScreen.is, PaperLoginScreen);
