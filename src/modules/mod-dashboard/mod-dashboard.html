@@ -69,7 +69,7 @@
                 return {
                     view:{
                         type: String,
-                        observer: '_pageChanged'
+                        // observer: '_pageChanged'
                     },
 		            route: Object,
     		        routeData: Object
@@ -79,19 +79,16 @@
                 super();
             }
             static get observers(){
-                console.log(this.route, 'route');
                 return ['_routerChanged(routeData.view)'];
             }
             _routerChanged(view){
                 this.view = view || 'list';
-		        console.log(this.route, 'route');
-		        console.log(this.view, 'view');
             }
-            _pageChanged(page, oldPage) {
-                console.log(this.route, 'route');
-                console.log(page, 'page');
-                console.log(oldPage, 'old page');
-            }
+            // _pageChanged(page, oldPage) {
+            //     console.log(this.route, 'route');
+            //     console.log(page, 'page');
+            //     console.log(oldPage, 'old page');
+            // }
         }
         window.customElements.define(ModDashboard.is, ModDashboard);
     </script>

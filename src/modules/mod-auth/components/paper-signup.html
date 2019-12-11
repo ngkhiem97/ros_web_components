@@ -349,17 +349,22 @@ Custom property | Description | Default
             _registerResponse(e) {
                 this.loading = false;
 
-                // Todo: handle response
-                console.log('whoa! request complete');
-                console.log(e.detail.response);
+                // Fire login success event
+                if (e.detail.response) {
+                    console.log(e.detail.response, "whoa! request complete");
+                    this.dispatchEvent(new CustomEvent('register-success', e));
+                }
             }
 
             _registerError(e) {
                 this.loading = false;
 
                 // Todo: handle response
-                console.log('whoa! request complete');
-                console.log(e.detail.response);
+                console.log(e.detail.response, "request error");
+                this.$.userNameInput.invalid = true;
+                this.$.emailInput.invalid = true;
+                this.$.passInput.invalid = true;
+                this.$.confirmPassInput.invalid = true;
             }
         }
 

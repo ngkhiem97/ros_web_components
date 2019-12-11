@@ -13,10 +13,10 @@
             }
         </style>
 
-        <!-- binds to the app's URL -->
+        <!-- Binds to the app's URL -->
         <app-location route="{{route}}"></app-location>
 
-        <!-- manages the top-level routes data -->
+        <!-- Manages the top-level routes data -->
         <app-route route="{{route}}"
                    pattern="/:page"
                    data="{{routeData}}"
@@ -26,16 +26,16 @@
         <!-- URL Routing elements -->
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
 
-            <!-- authentication module -->
+            <!-- Authentication module -->
             <mod-auth name="auth" route="[[subroute]]"></mod-auth>
 
-            <!-- dashboard module -->
+            <!-- Dashboard module -->
             <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
 
-            <!-- turtlebot view -->
+            <!-- Turtlebot view -->
             <mod-turtlebot name="turtlebot"></mod-turtlebot>
 
-            <!-- not found -->
+            <!-- Not found -->
             <div name="404">
                 <h3>Page could not be found!</h3>
             </div>
@@ -53,8 +53,7 @@
             static get properties() {
                 return {
                     page:{
-                        type: String,
-                        observer: '_pageChanged'
+                        type: String
                     }
                 };
             }
@@ -62,14 +61,7 @@
                 return ['_routerChanged(routeData.page)'];
             }
             _routerChanged(page){
-                // console.log(this.route, 'route');
-		        // console.log(this.page, 'page');
-		        // console.log(this.subroute, 'subroute');
-                this.page = page || 'login';
-            }
-            _pageChanged(page, oldPage) {
-                console.log(page, 'page');
-                console.log(oldPage, 'old page');
+                this.page = page || 'auth';
             }
         }
 

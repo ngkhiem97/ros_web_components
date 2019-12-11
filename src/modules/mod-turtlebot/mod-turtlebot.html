@@ -51,6 +51,9 @@
             static get properties() {
                 return {};
             }
+            ready() {
+                super.ready();
+            }
             _handleConnection() {
                 this.status = 'Connected to the websocket server.';
                 console.log(this.status);
@@ -62,9 +65,6 @@
             _handleError() {
                 this.status = 'Error connecting to the websocket server.';
                 console.log(this.status);
-            }
-            ready() {
-                super.ready();
             }
         }
 

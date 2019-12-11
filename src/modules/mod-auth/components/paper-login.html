@@ -296,17 +296,20 @@ Custom property | Description | Default
             _loginResponse(e) {
                 this.loading = false;
 
-                // Todo: handle response
-                console.log('whoa! request complete');
-                console.log(e.detail.response);
+                // Fire login success event
+                if (e.detail.response) {
+                    console.log(e.detail.response, "whoa! request complete");
+                    this.dispatchEvent(new CustomEvent('login-success', e));
+                }
             }
 
             _loginError(e) {
                 this.loading = false;
 
                 // Todo: handle response
-                console.log('whoa! request complete');
-                console.log(e.detail.response);
+                console.log(e.detail.response, "request error");
+                this.$.userInput.invalid = true;
+                this.$.passInput.invalid = true;
             }
         }
 
