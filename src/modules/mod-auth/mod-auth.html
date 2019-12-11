@@ -1,4 +1,6 @@
+<link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="./components/paper-login.html">
+<link rel="import" href="./components/paper-signup.html">
 
 <dom-module id="mod-auth">
     <template>
@@ -12,9 +14,29 @@
                 top: 50%;
                 transform: translate(-50%, -50%);
             }
+
+            paper-signup {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
         </style>
 
-        <paper-login title="Login to" subtitle="Turtlebot dashboard"></paper-login>
+        <!-- Manages the routes data -->
+        <app-route
+                route="[[route]]"
+                pattern="/:view"
+                data="{{routeData}}">
+        </app-route>
+
+        <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
+            <!-- Login page -->
+            <paper-login name="login" title="Login to" subtitle="Turtlebot dashboard"></paper-login>
+
+            <!-- Sign up page -->
+            <paper-signup name="signup" title="Sign up" subtitle="Turtlebot dashboard"></paper-signup>
+        </iron-pages>
     </template>
 
     <script>
@@ -25,11 +47,32 @@
         class ModAuth extends Polymer.Element {
             static get is() { return 'mod-auth'; }
             static get properties() {
-                return {};
+                return {
+                    view:{
+                        type: String,
+                        observer: '_pageChanged'
+                    },
+                    route: Object,
+                    routeData: Object
+                };
             }
             ready() {
                 super.ready();
                 // console.log(this.$, "this attributes");
+            }
+            static get observers(){
+                console.log(this.route, 'route');
+                return ['_routerChanged(routeData.view)'];
+            }
+            _routerChanged(view){
+                this.view = view || 'list';
+                console.log(this.route, 'route');
+                console.log(this.view, 'view');
+            }
+            _pageChanged(page, oldPage) {
+                console.log(this.route, 'route');
+                console.log(page, 'page');
+                console.log(oldPage, 'old page');
             }
         }
         window.customElements.define(ModAuth.is, ModAuth);

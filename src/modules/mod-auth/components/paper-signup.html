@@ -1,2 +1,252 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../../bower_components/paper-password-input/paper-password-input.html">
+<link rel="import" href="../../../../bower_components/paper-password-input/match-passwords-validator.html">
+
 <dom-module id="paper-signup">
+    <template>
+        <style>
+            #signUpForm {
+                width: 450px;
+                height: 520px;
+                background: var(--login-form-background-color, white);
+                @apply --shadow-elevation-12dp;
+                @apply --login-form;
+            }
+
+            #signUpFormContent {
+                padding: 48px;
+            }
+
+            #signUpFormContent>* {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            #signUpBtn {
+                margin-top: 24px;
+                float: right;
+                background-color: var(--login-btn-background-color, var(--paper-indigo-500));
+                color: var(--login-btn-text-color, white);
+                --paper-button-raised-keyboard-focus: {
+                    background-color: var(--login-btn-raised-background-color, var(--paper-pink-a200)) !important;
+                    color: var(--login-btn-text-color, white) !important;
+                };
+
+                @apply --login-btn;
+            }
+
+            #signUpBtn[disabled] {
+                background-color: var(--login-btn-disabled-background-color, var(--paper-indigo-100));
+            }
+
+            h1 {
+                @apply --paper-font-display1;
+                margin: 0;
+                @apply --login-title;
+            }
+
+            h2 {
+                @apply --paper-font-title;
+                margin: 0;
+                @apply --login-subtitle;
+            }
+
+            paper-progress {
+                width: 100%;
+            }
+
+            #errorMsg {
+                margin-top: 16px;
+                @apply --paper-font-menu;
+            }
+
+            #errorMsg {
+                color: var(--login-error-label-color, var(--error-color));
+            }
+
+            img#logo {
+                position: absolute;
+                height: 100px;
+                width: 100px;
+                right: 48px;
+                top: 48px;
+            }
+
+            iron-icon.big {
+                height: 50px;
+                width: 50px;
+            }
+        </style>
+
+        <div id="signUpForm">
+            <paper-progress disabled="[[!loading]]" indeterminate></paper-progress>
+            <div id="signUpFormContent">
+                <!-- Logo -->
+                <img id="logo" src="{{logoImg}}" alt="logo">
+
+                <!-- Title -->
+                <h1>[[title]] <iron-icon class="big" icon="input"></iron-icon></h1>
+
+                <!-- Sub-title -->
+                <h2>[[subtitle]]</h2>
+                <div id="errorMsg">[[errorMsg]]</div>
+                <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text" label="[[userInputLabel]]" required auto-validate
+                             error-message="[[userInputErrMsg]]"></paper-input>
+                <match-passwords-validator id="match-passwords-validator" password="[[password]]"></match-passwords-validator>
+                <paper-password-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password" label="[[passwordInputLabel]]" required
+                             auto-validate error-message="[[passwordInputErrMsg]]"></paper-password-input>
+                <paper-password-input id="confirmPassInput" value="{{confirmPassword}}" disabled="[[loading]]" type="confirmPassword" label="[[confirmPasswordInputLabel]]" required
+                             auto-validate validator="match-passwords-validator" error-message="[[confirmPasswordInputErrMsg]]"></paper-password-input>
+                <paper-button on-click="_signUp" disabled="[[loading]]" id="signUpBtn" raised class="indigo">[[signUpBtnText]]</paper-button>
+                <a href="/auth/login">Login</a>
+            </div>
+        </div>
+    </template>
+    <script>
+        class PaperSignUpScreen extends Polymer.Element {
+            static get is() { return "paper-signup" }
+            static get properties() {
+                return {
+                    logoImg: {
+                        type: String,
+                        value: function () {
+                            return this.resolveUrl("../img/logo.png");
+                        }
+                    },
+
+                    /**
+                     * Title of the loginscreen
+                     */
+                    title: String,
+
+                    /**
+                     * Subtitle of the loginscreen
+                     */
+                    subtitle: String,
+
+                    /**
+                     * Error message to show (example : "Invalid username")
+                     */
+                    errorMsg: String,
+
+                    /**
+                     * Content of the username field
+                     */
+                    username: {
+                        type: String,
+                        notify: true
+                    },
+
+                    /**
+                     * Content of the password field
+                     */
+                    password: {
+                        type: String,
+                        notify: true
+                    },
+
+                    /**
+                     * Content of the confirm password field
+                     */
+                    confirmPassword: {
+                        type: String,
+                        notify: true
+                    },
+
+                    /**
+                     * When true, all fields are disabled and the progress bar is visible
+                     */
+                    loading: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    /**
+                     * Placeholder of the username field
+                     */
+                    userInputLabel: {
+                        type: String,
+                        value: "Username"
+                    },
+
+                    /**
+                     * Error message of the username field
+                     */
+                    userInputErrMsg: {
+                        type: String,
+                        value: "Username required"
+                    },
+
+                    /**
+                     * Placeholder of the password field
+                     */
+                    passwordInputLabel: {
+                        type: String,
+                        value: "Password"
+                    },
+
+                    /**
+                     * Error message of the password field
+                     */
+                    passwordInputErrMsg: {
+                        type: String,
+                        value: "Password required"
+                    },
+
+                    /**
+                     * Placeholder of the confirm password field
+                     */
+                    confirmPasswordInputLabel: {
+                        type: String,
+                        value: "Confirm password"
+                    },
+
+                    /**
+                     * Error message of the confirm password field
+                     */
+                    confirmPasswordInputErrMsg: {
+                        type: String,
+                        value: "Confirm password is not correct"
+                    },
+
+                    /**
+                     * Login button label
+                     */
+                    signUpBtnText: {
+                        type: String,
+                        value: "Sign Up"
+                    }
+                }
+            }
+
+            ready() {
+                super.ready();
+                const self = this;
+                this.$.signUpForm.addEventListener("keypress", (e) => {
+                    if (e.keyCode == 13) { //Todo: refactor for constant value
+                        self._login();
+                        return false;
+                    }
+                });
+            }
+
+            _signUp() {
+                const vUserInput = this.$.userInput.validate();
+                const vPassInput = this.$.passInput.validate();
+                const vConfirmPassInput = this.$.confirmPassInput.validate();
+
+                console.log('sign up button pressed');
+                console.log(this.errorMsg);
+            }
+        }
+        customElements.define(PaperSignUpScreen.is, PaperSignUpScreen);
+    </script>
 </dom-module>

@@ -70,8 +70,7 @@ Custom property | Description | Default
                 --paper-button-raised-keyboard-focus: {
                     background-color: var(--login-btn-raised-background-color, var(--paper-pink-a200)) !important;
                     color: var(--login-btn-text-color, white) !important;
-                }
-            ;
+                };
 
                 @apply --login-btn;
             }
@@ -131,7 +130,7 @@ Custom property | Description | Default
                 <paper-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password" label="[[passwordInputLabel]]" required
                              auto-validate error-message="[[passwordInputErrMsg]]"></paper-input>
                 <paper-button on-click="_login" disabled="[[loading]]" id="loginBtn" raised class="indigo">[[loginBtnText]]</paper-button>
-                <slot name="links"></slot>
+                <a href="/auth/signup">Sign up</a>
             </div>
         </div>
     </template>
@@ -232,30 +231,31 @@ Custom property | Description | Default
                 super.ready();
                 var self = this;
                 this.$.loginForm.addEventListener("keypress", (e) => {
-                    if (e.keyCode == 13) {//Enter
+                    if (e.keyCode == 13) { //Todo: refactor for constant value
                         self._login();
                         return false;
                     }
                 });
-
             }
 
             _login() {
                 const vUserInput = this.$.userInput.validate();
                 const vPassInput = this.$.passInput.validate();
+
                 if (vUserInput && vPassInput) {
-                    // this.dispatchEvent(new CustomEvent('login-btn-click', { bubbles: true, composed: true }));
+                    this.dispatchEvent(new CustomEvent('login-btn-click', { bubbles: true, composed: true }));
+                    console.log('login button pressed');
 
                     /** Temporary bypass account **/
-                    if (this.username === 'admin' && this.password === 'admin') {
-                        window.location.href = '/dashboard/list';
-                    } else {
-                        this.userInputErrMsg     = "Wrong username";
-                        this.passwordInputErrMsg = "Wrong password";
-
-                        this.$.userInput.invalid = true;
-                        this.$.passInput.invalid = true;
-                    }
+                    // if (this.username === 'admin' && this.password === 'admin') {
+                    //     window.location.href = '/dashboard/list';
+                    // } else {
+                    //     this.userInputErrMsg     = "Wrong username";
+                    //     this.passwordInputErrMsg = "Wrong password";
+                    //
+                    //     this.$.userInput.invalid = true;
+                    //     this.$.passInput.invalid = true;
+                    // }
                 }
             }
         }
