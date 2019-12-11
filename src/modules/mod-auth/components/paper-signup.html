@@ -102,16 +102,27 @@
                 <!-- Sub-title -->
                 <h2>[[subtitle]]</h2>
                 <div id="errorMsg">[[errorMsg]]</div>
+
+                <!-- Username -->
                 <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text" label="[[userInputLabel]]" required auto-validate
                              error-message="[[userInputErrMsg]]"></paper-input>
+
+                <!-- Email -->
                 <paper-input id="emailInput" value="{{email}}" disabled="[[loading]]" type="text" label="[[emailInputLabel]]" required auto-validate
                              error-message="[[emailInputErrMsg]]"></paper-input>
-                <match-passwords-validator id="match-passwords-validator" password="[[password]]"></match-passwords-validator>
+
+                <!-- Password -->
                 <paper-password-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password" label="[[passwordInputLabel]]" required
                              auto-validate error-message="[[passwordInputErrMsg]]"></paper-password-input>
+
+                <!-- Confirm password -->
+                <match-passwords-validator id="match-passwords-validator" password="[[password]]"></match-passwords-validator>
                 <paper-password-input id="confirmPassInput" value="{{confirmPassword}}" disabled="[[loading]]" type="confirmPassword" label="[[confirmPasswordInputLabel]]" required
                              auto-validate validator="match-passwords-validator" error-message="[[confirmPasswordInputErrMsg]]"></paper-password-input>
+
+                <!-- Signup button -->
                 <paper-button on-click="_signUp" disabled="[[loading]]" id="signUpBtn" raised class="indigo">[[signUpBtnText]]</paper-button>
+
                 <a href="/auth/login">Login</a>
             </div>
         </div>
