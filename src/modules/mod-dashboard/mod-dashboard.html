@@ -1,0 +1,95 @@
+<link rel="import" href="./../../../bower_components/app-route/app-route.html">
+<link rel="import" href="./../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./components/map-gallery.html">
+<link rel="import" href="./components/sidebar-nav.html">
+<link rel="import" href="./components/turtlebot-list.html">
+
+<dom-module id="mod-dashboard">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            .main-content {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                left: 60px;
+                background: #105469;
+            }
+            #sidebar-nav:hover + #main-content {
+                left: 180px;
+            }
+            map-gallery {
+                width: 80%;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+            ros-core {
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+        </style>
+
+        <!-- manages the routes data -->
+        <app-route
+                route="[[route]]"
+                pattern="/:view"
+                data="{{routeData}}">
+	    </app-route>
+
+        <!-- side bar for iron-pages navigation -->
+        <sidebar-nav id="sidebar-nav"></sidebar-nav>
+
+        <!-- dashboard content -->
+        <div class="main-content" id="main-content">
+
+            <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
+
+                <!-- display list of available turtlebot -->
+                <turtlebot-list name="list"></turtlebot-list>
+
+                <!-- display all the maps scanned by turtlebots -->
+                <map-gallery name="maps"></map-gallery>
+
+                <!-- display the information of the ros system -->
+                <ros-core name="systems"></ros-core>
+            </iron-pages>
+        </div>
+    </template>
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class ModDashboard extends Polymer.Element {
+            static get is() { return 'mod-dashboard'; }
+            static get properties() {
+                return {
+                    view:{
+                        type: String,
+                        // observer: '_pageChanged'
+                    },
+		            route: Object,
+    		        routeData: Object
+                };
+            }
+            constructor() {
+                super();
+            }
+            static get observers(){
+                return ['_routerChanged(routeData.view)'];
+            }
+            _routerChanged(view){
+                this.view = view || 'list';
+            }
+            // _pageChanged(page, oldPage) {
+            //     console.log(this.route, 'route');
+            //     console.log(page, 'page');
+            //     console.log(oldPage, 'old page');
+            // }
+        }
+        window.customElements.define(ModDashboard.is, ModDashboard);
+    </script>
+</dom-module>

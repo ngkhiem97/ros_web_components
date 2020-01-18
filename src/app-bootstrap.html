@@ -1,0 +1,78 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="modules/mod-auth/mod-auth.html">
+<link rel="import" href="modules/mod-dashboard/mod-dashboard.html">
+<link rel="import" href="modules/mod-turtlebot/mod-turtlebot.html">
+
+<dom-module id="app-bootstrap">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+
+        <!-- Binds to the app's URL -->
+        <app-location route="{{route}}"></app-location>
+
+        <!-- Manages the top-level routes data -->
+        <app-route route="{{route}}"
+                   pattern="/:page"
+                   data="{{routeData}}"
+                   tail="{{subroute}}">
+        </app-route>
+
+        <!--
+            Authentication data
+            If authenticated, user can access to:
+                - Dashboard module [mod-dashboard]
+                - Turtlebot module [mod-turtlebot]
+        -->
+        <auth-data id="authData"></auth-data>
+
+        <!-- URL Routing elements -->
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+
+            <!-- Authentication module -->
+            <mod-auth name="auth" route="[[subroute]]"></mod-auth>
+
+            <!-- Dashboard module -->
+            <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
+
+            <!-- Turtlebot module -->
+            <mod-turtlebot name="turtlebot"></mod-turtlebot>
+
+            <!-- Not found -->
+            <div name="404">
+                <h3>Page could not be found!</h3>
+            </div>
+        </iron-pages>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class AppBootstrap extends Polymer.Element {
+            static get is() { return 'app-bootstrap'; }
+            static get properties() {
+                return {
+                    page:{
+                        type: String
+                    }
+                };
+            }
+            static get observers(){
+                return ['_routerChanged(routeData.page)'];
+            }
+            _routerChanged(page){
+                this.page = page || 'auth';
+            }
+        }
+
+        window.customElements.define(AppBootstrap.is, AppBootstrap);
+    </script>
+</dom-module>

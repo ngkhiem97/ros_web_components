@@ -1,10 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
     <meta charset="utf-8">
+    <base href="/">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>ros-web-components</title>
+    <title>Turtlebot Web Service</title>
     <meta name="description" content="ros-web-components description">
 
     <!-- See https://goo.gl/OOhYW5 -->
@@ -12,9 +11,15 @@
 
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <link rel="import" href="/src/ros-web-teleop-app.html">
-</head>
-<body>
-<ros-web-teleop-app></ros-web-teleop-app>
-</body>
-</html>
+    <link rel="import" href="src/app-bootstrap.html">
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <app-bootstrap></app-bootstrap>
+  
+
+</body></html>

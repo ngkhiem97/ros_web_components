@@ -1,0 +1,70 @@
+<link rel="import" href="./../../../bower_components/app-route/app-route.html">
+<link rel="import" href="./components/paper-login.html">
+<link rel="import" href="./components/paper-signup.html">
+
+<dom-module id="mod-auth">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            paper-login {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            paper-signup {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        </style>
+
+        <!-- Manages the routes data -->
+        <app-route
+                route="[[route]]"
+                pattern="/:view"
+                data="{{routeData}}">
+        </app-route>
+
+        <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
+            <!-- Login page -->
+            <paper-login name="login" title="Login to" subtitle="Turtlebot dashboard"></paper-login>
+
+            <!-- Sign up page -->
+            <paper-signup name="signup" title="Sign up" subtitle="Turtlebot dashboard"></paper-signup>
+        </iron-pages>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class ModAuth extends Polymer.Element {
+            static get is() { return 'mod-auth'; }
+            static get properties() {
+                return {
+                    view:{
+                        type: String,
+                    },
+                    route: Object,
+                    routeData: Object
+                };
+            }
+            ready() {
+                super.ready();
+            }
+            static get observers(){
+                return ['_routerChanged(routeData.view)'];
+            }
+            _routerChanged(view){
+                this.view = view || 'login';
+            }
+        }
+        window.customElements.define(ModAuth.is, ModAuth);
+    </script>
+</dom-module>

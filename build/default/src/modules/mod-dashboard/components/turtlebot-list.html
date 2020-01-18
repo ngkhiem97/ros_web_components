@@ -1,0 +1,105 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+
+<!-- Style import -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
+
+<dom-module id="turtlebot-list">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: 'Open Sans', sans-serif;
+            }
+            h1 {
+                position: relative;
+                color: white;
+                padding-left: 40px;
+            }
+            table {
+                background: #012B39;
+                border-radius: 0.25em;
+                border-collapse: collapse;
+                margin: 1em;
+            }
+            th {
+                border-bottom: 1px solid #364043;
+                color: #E2B842;
+                font-size: 0.85em;
+                font-weight: 600;
+                padding: 0.5em 1em;
+                text-align: left;
+            }
+            td {
+                color: #fff;
+                font-weight: 400;
+                padding: 0.65em 1em;
+            }
+            .disabled td {
+                color: #4F5F64;
+            }
+            tbody tr {
+                transition: background 0.25s ease;
+            }
+            tbody tr:hover {
+                background: #014055;
+            }
+            .turtlebot-connect {
+                background: #014055;
+            }
+        </style>
+
+        <!-- HTML goes here-->
+        <h1>Turtlebot list</h1><table>
+            <thead>
+            <tr>
+                <th>ID
+                </th><th>Name
+                </th><th>Model
+                </th><th>SLAM
+            </th></tr></thead>
+            <tbody>
+            <tr>
+                <td>1
+                </td><td>tb_01
+                </td><td>Burger
+                </td><td><paper-button class="turtlebot-connect" on-click="_connect">connect</paper-button>
+            </td></tr><tr>
+                <td>2
+                </td><td>tb_02
+                </td><td>Burger
+                </td><td><paper-button class="turtlebot-connect">connect</paper-button>
+            </td></tr><tr>
+                <td>3
+                </td><td>tb_03
+                </td><td>Burger
+                </td><td><paper-button class="turtlebot-connect">connect</paper-button>
+            </td></tr><tr class="disabled">
+                <td>4
+                </td><td>tb_04
+                </td><td>Burger
+            </td></tr></tbody>
+        </table>
+    </template>
+
+    <script>/**
+ * @customElement
+ * @polymer
+ */
+class TurtlebotList extends Polymer.Element {
+  static get is() {
+    return 'turtlebot-list';
+  }
+
+  static get properties() {
+    return {};
+  }
+
+  _connect() {
+    window.location.href = '/turtlebot';
+  }
+
+}
+
+window.customElements.define(TurtlebotList.is, TurtlebotList);</script>
+</dom-module>

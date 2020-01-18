@@ -3,9 +3,17 @@
   "main": "index.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
+    "paper-card": "PolymerElements/paper-card#2.0",
+    "app-route": "PolymerElements/app-route#2.0.0",
+    "paper-tabs": "PolymerElements/paper-tabs#2.0.0",
+    "paper-slider": "PolymerElements/paper-slider#2.0",
+    "iron-pages": "PolymerElements/iron-pages#2.0.0",
+    "paper-progress": "PolymerElements/paper-progress#2.0",
+    "iron-ajax": "PolymerElements/iron-ajax#2.0.0",
     "ros-rviz": "jstnhuang/ros-rviz#^3.1.1",
     "ros-topic": "jstnhuang/ros-topic#^1.0.0",
-    "ros-service": "jstnhuang/ros-service#^2.0.1"
+    "ros-service": "jstnhuang/ros-service#^2.0.1",
+    "paper-password-input": "Collaborne/paper-password-input"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",

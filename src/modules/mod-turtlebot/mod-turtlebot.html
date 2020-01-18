@@ -1,0 +1,73 @@
+<link rel="import" href="../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../bower_components/ros-rviz/ros-rviz.html">
+<link rel="import" href="../components/ros-core.html">
+<link rel="import" href="./components/turtlebot-controller.html">
+
+<dom-module id="mod-turtlebot">
+    <template>
+        <style>
+            :host {
+                display: block;
+                height: 100vh;
+                margin: 0;
+            }
+            turtlebot-controller {
+                position: absolute;
+                bottom: 8px;
+                right: 16px;
+            }
+            ros-core {
+                position: absolute;
+                bottom: 8px;
+                left: 16px;
+            }
+        </style>
+
+        <!-- Get ROS Web socket connection -->
+        <ros-websocket auto ros="{{ros}}"
+                       url="{{url}}"
+                       on-connection="_handleConnection"
+                       on-close="_handleClose"
+                       on-error="_handleError"></ros-websocket>
+
+        <!-- Initialize ROS RViz DOM -->
+        <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
+
+        <!-- Movement controller -->
+        <turtlebot-controller></turtlebot-controller>
+
+        <!-- ROS Core status -->
+        <ros-core></ros-core>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class ModTurtlebot extends Polymer.Element {
+            static get is() { return 'mod-turtlebot'; }
+            static get properties() {
+                return {};
+            }
+            ready() {
+                super.ready();
+            }
+            _handleConnection() {
+                this.status = 'Connected to the websocket server.';
+                console.log(this.status);
+            }
+            _handleClose() {
+                this.status = 'Closed connection to the websocket server.';
+                console.log(this.status);
+            }
+            _handleError() {
+                this.status = 'Error connecting to the websocket server.';
+                console.log(this.status);
+            }
+        }
+
+        window.customElements.define(ModTurtlebot.is, ModTurtlebot);
+    </script>
+</dom-module>

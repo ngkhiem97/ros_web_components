@@ -1,0 +1,200 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../bower_components/ros-topic/ros-topic.html">
+<link rel="import" href="../../../../bower_components/ros-service/ros-service.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="turtlebot-controller">
+    <template>
+        <style is="custom-style" include="iron-flex"></style>
+        <style>
+            :host {
+                display: block;
+            }
+            .layout .horizontal {
+                margin-top: 6px;
+            }
+            paper-slider {
+                --paper-slider-input: {
+                    width: 100px;
+                }
+            }
+            paper-button {
+                width: 100px;
+                background-color: #eee;
+                user-select: none;
+            }
+            #driving {
+                display: inline-block;
+            }
+            #driving h1{
+                text-align: center;
+            }
+            #driving p{
+                text-align: center;
+            }
+        </style>
+
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto="" id="ros" ros="{{ros}}" url="{{url}}" on-connection="_handleConnection" on-close="_handleClose" on-error="_handleError"></ros-websocket>
+
+        <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
+        <ros-topic id="baseTopic" ros="{{ros}}" topic="cmd_vel" msg-type="geometry_msgs/Twist"></ros-topic>
+
+        <paper-card id="driving" class="layout vertical">
+            <div class="card-content">
+
+                <div class="layout horizontal">
+                    <div class="flex"></div>
+                    <paper-button raised="" noink="" on-down="_startForward" on-up="_endBaseCommand"><iron-icon icon="arrow-upward"></iron-icon></paper-button>
+                    <div class="flex"></div>
+                </div>
+
+                <div class="layout horizontal">
+                    <paper-button raised="" noink="" on-down="_startLeft" on-up="_endBaseCommand"><iron-icon icon="undo"></iron-icon></paper-button>
+                    <paper-button raised="" noink="" on-down="_startBack" on-up="_endBaseCommand"><iron-icon icon="arrow-downward"></iron-icon></paper-button>
+                    <paper-button raised="" noink="" on-down="_startRight" on-up="_endBaseCommand"><iron-icon icon="redo"></iron-icon></paper-button>
+                </div>
+
+                <p>{{status}}</p>
+            </div>
+        </paper-card>
+    </template>
+    <script>class TurtlebotController extends Polymer.Element {
+  static get is() {
+    return 'turtlebot-controller';
+  }
+
+  static get properties() {
+    return {};
+  }
+
+  ready() {
+    super.ready();
+    this.hostname = window.location.hostname;
+  }
+
+  _handleConnection() {
+    this.status = 'Connected to the websocket server.';
+    console.log(this.status);
+  }
+
+  _handleClose() {
+    this.status = 'Closed connection to the websocket server.';
+    console.log(this.status);
+  }
+
+  _handleError() {
+    this.status = 'Error connecting to the websocket server.';
+    console.log(this.status);
+  }
+
+  _startForward(evt) {
+    evt.preventDefault();
+    this.status = 'Driving forward...';
+    var baseTopic = this.$.baseTopic;
+
+    if (this.baseCommand) {
+      clearInterval(this.baseCommand);
+    }
+
+    this.baseCommand = setInterval(function () {
+      baseTopic.publish({
+        linear: {
+          x: 0.1,
+          y: 0,
+          z: 0
+        },
+        angular: {
+          x: 0,
+          y: 0,
+          z: 0
+        }
+      });
+    }, 10);
+  }
+
+  _startBack(evt) {
+    evt.preventDefault();
+    this.status = 'Driving forward...';
+    var baseTopic = this.$.baseTopic;
+
+    if (this.baseCommand) {
+      clearInterval(this.baseCommand);
+    }
+
+    this.baseCommand = setInterval(function () {
+      baseTopic.publish({
+        linear: {
+          x: -0.1,
+          y: 0,
+          z: 0
+        },
+        angular: {
+          x: 0,
+          y: 0,
+          z: 0
+        }
+      });
+    }, 10);
+  }
+
+  _startLeft(evt) {
+    evt.preventDefault();
+    this.status = 'Turning left...';
+    var baseTopic = this.$.baseTopic;
+    this.baseCommand = setInterval(function () {
+      baseTopic.publish({
+        linear: {
+          x: 0,
+          y: 0,
+          z: 0
+        },
+        angular: {
+          x: 0,
+          y: 0,
+          z: 0.5
+        }
+      });
+    }, 10);
+  }
+
+  _startRight(evt) {
+    evt.preventDefault();
+    this.status = 'Driving forward...';
+    var baseTopic = this.$.baseTopic;
+
+    if (this.baseCommand) {
+      clearInterval(this.baseCommand);
+    }
+
+    this.baseCommand = setInterval(function () {
+      baseTopic.publish({
+        linear: {
+          x: 0.1,
+          y: 0,
+          z: 0
+        },
+        angular: {
+          x: 0,
+          y: 0,
+          z: -0.5
+        }
+      });
+    }, 10);
+  }
+
+  _endBaseCommand(evt) {
+    this.status = 'Stopped driving.';
+    clearInterval(this.baseCommand);
+  }
+
+}
+
+window.customElements.define(TurtlebotController.is, TurtlebotController);</script>
+</dom-module>

@@ -1,0 +1,318 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../../../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../../bower_components/iron-icons/iron-icons.html">
+
+<!-- Service library-->
+<link rel="import" href="../services/service-account.html">
+
+<!--
+  `paper-login` is a material login screen, built using Polymer
+
+### Example
+
+        <paper-login></paper-login>
+
+### Events
+
+`login-btn-click` is triggered when user clicks on the login button
+
+## Slots
+
+You can add links such as 'Sign up' or 'Lost password', via the slot 'links'.
+For an example, go to the demo.
+
+### Styling
+
+Custom property | Description | Default
+----------------|-------------|---------
+`--login-form-background-color` | Background of the login form | `white`
+`--login-btn-background-color` | Background of the login button | `--paper-indigo-500`
+`--login-btn-raised-background-color` | Background of the login button when raised | `--paper-pink-a200`
+`--login-btn-disabled-background-color` | Background of the login button when disabled (when loading property is true) | `--paper-indigo-100`
+`--login-btn-text-color` | Text color of the login button | `white`
+`--login-error-label-color` | Text color of the error label | `--error-color`
+`--login-form` | Mixin for the login form  | `{}`
+`--login-btn` | Mixin for the login button  | `{}`
+`--login-title` | Mixin for the login title  | `{}`
+`--login-subtitle` | Mixin for the login subtitle  | `{}`
+
+@demo demo/index.html
+-->
+
+<dom-module id="paper-login">
+    <template>
+        <style>
+            #loginForm {
+                width: 450px;
+                height: 450px;
+                background: var(--login-form-background-color, white);
+                @apply --shadow-elevation-12dp;
+                @apply --login-form;
+            }
+
+            #loginFormContent {
+                padding: 48px;
+            }
+
+            #loginFormContent > * {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            #loginBtn {
+                margin-top: 24px;
+                float: right;
+                background-color: var(--login-btn-background-color, var(--paper-indigo-500));
+                color: var(--login-btn-text-color, white);
+                --paper-button-raised-keyboard-focus: {
+                    background-color: var(--login-btn-raised-background-color, var(--paper-pink-a200)) !important;
+                    color: var(--login-btn-text-color, white) !important;
+                };
+
+                @apply --login-btn;
+            }
+
+            #loginBtn[disabled] {
+                background-color: var(--login-btn-disabled-background-color, var(--paper-indigo-100));
+            }
+
+            h1 {
+                @apply --paper-font-display1;
+                margin: 0;
+                @apply --login-title;
+            }
+
+            h2 {
+                @apply --paper-font-title;
+                margin: 0;
+                @apply --login-subtitle;
+            }
+
+            paper-progress {
+                width: 100%;
+            }
+
+            #errorMsg {
+                margin-top: 16px;
+                @apply --paper-font-menu;
+            }
+
+            #errorMsg {
+                color: var(--login-error-label-color, var(--error-color));
+            }
+
+            img#logo {
+                position: absolute;
+                height: 100px;
+                width: 100px;
+                right: 48px;
+                top: 48px;
+            }
+
+            iron-icon.big {
+                height: 50px;
+                width: 50px;
+            }
+        </style>
+
+        <div id="loginForm">
+            <paper-progress disabled="[[!loading]]" indeterminate></paper-progress>
+            <div id="loginFormContent">
+                <!-- Logo -->
+                <img id="logo" src="{{logoImg}}" alt="logo">
+
+                <!-- Title -->
+                <h1>[[title]]
+                    <iron-icon class="big" icon="input"></iron-icon>
+                </h1>
+
+                <!-- Sub-title -->
+                <h2>[[subtitle]]</h2>
+                <div id="errorMsg">[[errorMsg]]</div>
+
+                <!-- Username -->
+                <paper-input id="userInput" value="{{username}}" disabled="[[loading]]" type="text"
+                             label="[[userInputLabel]]" required auto-validate
+                             error-message="[[userInputErrMsg]]"></paper-input>
+
+                <!-- Password -->
+                <paper-input id="passInput" value="{{password}}" disabled="[[loading]]" type="password"
+                             label="[[passwordInputLabel]]" required
+                             auto-validate error-message="[[passwordInputErrMsg]]"></paper-input>
+
+                <!-- Login button -->
+                <paper-button on-click="_login" disabled="[[loading]]" id="loginBtn" raised class="indigo">
+                    [[loginBtnText]]
+                </paper-button>
+
+                <!-- Ajax component for login service -->
+                <service-account id="serviceAccount" on-response="_loginResponse"
+                                 on-error="_loginError"></service-account>
+
+                <a href="/auth/signup">Sign up</a>
+            </div>
+        </div>
+    </template>
+    <script>
+        class PaperLoginScreen extends Polymer.Element {
+            static get is() {
+                return "paper-login"
+            }
+
+            static get properties() {
+                return {
+                    logoImg: {
+                        type:  String,
+                        value: function () {
+                            return this.resolveUrl("../img/logo.png");
+                        }
+                    },
+
+                    /**
+                     * Title of the loginscreen
+                     */
+                    title: String,
+
+                    /**
+                     * Subtitle of the loginscreen
+                     */
+                    subtitle: String,
+
+                    /**
+                     * Error message to show (example : "Invalid username")
+                     */
+                    errorMsg: String,
+
+                    /**
+                     * Content of the username field
+                     */
+                    username: {
+                        type:   String,
+                        notify: true
+                    },
+
+                    /**
+                     * Content of the password field
+                     */
+                    password: {
+                        type:   String,
+                        notify: true
+                    },
+
+                    /**
+                     * When true, all fields are disabled and the progress bar is visible
+                     */
+                    loading: {
+                        type:  Boolean,
+                        value: false
+                    },
+
+                    /**
+                     * Placeholder of the username field
+                     */
+                    userInputLabel: {
+                        type:  String,
+                        value: "Username"
+                    },
+
+                    /**
+                     * Error message of the username field
+                     */
+                    userInputErrMsg: {
+                        type:  String,
+                        value: "Username required"
+                    },
+
+                    /**
+                     * Placeholder of the password field
+                     */
+                    passwordInputLabel: {
+                        type:  String,
+                        value: "Password"
+                    },
+
+                    /**
+                     * Error message of the password field
+                     */
+                    passwordInputErrMsg: {
+                        type:  String,
+                        value: "Password required"
+                    },
+
+                    /**
+                     * Login button label
+                     */
+                    loginBtnText: {
+                        type:  String,
+                        value: "Login"
+                    },
+
+                    /**
+                     * URL of login API
+                     */
+                    loginUrl: {
+                        type: String
+                    }
+                }
+            }
+
+            ready() {
+                super.ready();
+
+                // If enter key pressed on the form, login the account with credentials
+                this.$.loginForm.addEventListener("keypress", (e) => {
+                    if (e.keyCode === 13) { //Todo: refactor for constant value
+                        this._login();
+                        return false;
+                    }
+                });
+            }
+
+            /**
+             * Login when the submit button is pressed
+             */
+            _login() {
+                // Get validated fields status
+                const userInputValid = this.$.userInput.validate();
+                const passInputValid = this.$.passInput.validate();
+
+                if (userInputValid && passInputValid) {
+                    this.loading = true;
+
+                    // Login to the systems
+                    this.$.serviceAccount.login({
+                        email:    this.$.userInput.value,
+                        password: this.$.passInput.value
+                    });
+                }
+            }
+
+            _loginResponse(e) {
+                this.loading = false;
+
+                // Fire login success event
+                if (e.detail.response) {
+                    console.log(e.detail.response, "whoa! request complete");
+                    this.dispatchEvent(new CustomEvent('login-success', e));
+                }
+            }
+
+            _loginError(e) {
+                this.loading = false;
+
+                // Todo: handle response
+                console.log(e.detail.response, "request error");
+                this.$.userInput.invalid = true;
+                this.$.passInput.invalid = true;
+            }
+        }
+
+        customElements.define(PaperLoginScreen.is, PaperLoginScreen);
+    </script>
+</dom-module>
