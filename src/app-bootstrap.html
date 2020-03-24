@@ -1,10 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="modules/mod-auth/mod-auth.html">
-<link rel="import" href="modules/mod-dashboard/mod-dashboard.html">
-<link rel="import" href="modules/mod-turtlebot/mod-turtlebot.html">
-
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <dom-module id="app-bootstrap">
     <template>
         <style>
@@ -29,7 +26,7 @@
                 - Dashboard module [mod-dashboard]
                 - Turtlebot module [mod-turtlebot]
         -->
-        <auth-data id="authData"></auth-data>
+        <!-- <auth-data id="authData"></auth-data> -->
 
         <!-- URL Routing elements -->
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
@@ -45,7 +42,7 @@
 
             <!-- Not found -->
             <div name="404">
-                <h3>Page could not be found!</h3>
+                <h3>app-bootstrap::Page could not be found!{{page}}</h3>
             </div>
         </iron-pages>
 
@@ -61,7 +58,9 @@
             static get properties() {
                 return {
                     page:{
-                        type: String
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged'
                     }
                 };
             }
@@ -70,6 +69,19 @@
             }
             _routerChanged(page){
                 this.page = page || 'auth';
+            }
+            _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('modules/mod-'+page+'/mod-'+page+'.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true
+                );
+            }
+            _showPage404() {
+                this.page = '404';
             }
         }
 
