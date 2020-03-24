@@ -298,8 +298,10 @@ Custom property | Description | Default
 
                 // Fire login success event
                 if (e.detail.response) {
-                    console.log(e.detail.response, "whoa! request complete");
-                    this.dispatchEvent(new CustomEvent('login-success', e));
+                    // console.log(e.detail.response, "whoa! request complete");
+                    // this.dispatchEvent(new CustomEvent('login-success', e));
+
+                    window.location.replace("dashboard");
                 }
             }
 
