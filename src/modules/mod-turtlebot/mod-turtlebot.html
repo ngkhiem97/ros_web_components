@@ -1,3 +1,4 @@
+<link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/ros-websocket/ros-websocket.html">
 <link rel="import" href="../../../bower_components/ros-rviz/ros-rviz.html">
 <link rel="import" href="../components/ros-core.html">
@@ -23,6 +24,13 @@
             }
         </style>
 
+        <!-- Manages the routes data -->
+        <app-route
+                route="[[route]]"
+                pattern="/:view"
+                data="{{routeData}}">
+        </app-route>
+
         <!-- Get ROS Web socket connection -->
         <ros-websocket auto ros="{{ros}}"
                        url="{{url}}"
@@ -34,7 +42,7 @@
         <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
 
         <!-- Movement controller -->
-        <turtlebot-controller></turtlebot-controller>
+        <turtlebot-controller turtlebot-id="[[view]]"></turtlebot-controller>
 
         <!-- ROS Core status -->
         <ros-core></ros-core>
@@ -49,17 +57,24 @@
         class ModTurtlebot extends Polymer.Element {
             static get is() { return 'mod-turtlebot'; }
             static get properties() {
-                return {};
+                return {
+                    view:{
+                        type: String,
+                    },
+                    route: Object,
+                    routeData: Object
+                };
             }
             ready() {
                 super.ready();
+                console.log("Run turtlebot module with turtlebot-id : " + this.view);
                 
                 var config = {
                     "globalOptions": {
                         "background": "#111111",
                         "colladaLoader": "collada2",
                         "colladaServer": "http://localhost:8001/",
-                        "fixedFrame": "/map",
+                        "fixedFrame": this.view+"/map",
                         "url": "ws://localhost:9090",
                         "videoServer": "http://localhost:9999"
                     },
@@ -86,7 +101,7 @@
                             },
                             "continuous": true,
                             "opacity": "1",
-                            "topic": "/map"
+                            "topic": this.view+"/map"
                         },
                         "type": "occupancyGrid"
                         },
@@ -94,21 +109,28 @@
                         "isShown": true,
                         "name": "Robot model",
                         "options": {
-                            "param": "robot_description"
+                            "param": this.view+"/robot_description",
+                            "prefix": this.view
                         },
                         "type": "urdf"
                         },
-                                    {
-                                "isShown": true,
-                                "name": "Interactive Markers",
-                                "options": {
-                                    "topic": "/map_annotator/map_poses"
-                                },
-                                "type": "interactiveMarkers"
-                                }
+                        // {
+                        //     "isShown": true,
+                        //     "name": "Interactive Markers",
+                        //     "options": {
+                        //         "topic": "/map_annotator/map_poses"
+                        //     },
+                        //     "type": "interactiveMarkers"
+                        // }
                     ]
                 };
                 this.$.rviz.config = config;	
+            }
+            static get observers(){
+                return ['_routerChanged(routeData.view)'];
+            }
+            _routerChanged(view){
+                this.view = view || '';
             }
             _handleConnection() {
                 this.status = 'Connected to the websocket server.';

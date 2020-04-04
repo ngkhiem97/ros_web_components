@@ -52,7 +52,7 @@
         <ros-topic
                 id="baseTopic"
                 ros="{{ros}}"
-                topic="cmd_vel"
+                topic="[[turtlebotId]]/cmd_vel"
                 msg-type="geometry_msgs/Twist"
         ></ros-topic>
 
@@ -80,11 +80,15 @@
             static get is() { return 'turtlebot-controller'; }
             static get properties() {
                 return {
+                    turtlebotId:{
+                        type: String
+                    }
                 };
             }
 
             ready() {
                 super.ready();
+                console.log("Running turtlebot controller with turtebot-id: " + this.turtlebotId);
                 this.hostname = window.location.hostname;
             }
 

@@ -81,17 +81,17 @@
                 <td>1
                 <td>tb_01
                 <td>Burger
-                <td><paper-button class="turtlebot-connect" on-click="_connect">connect</paper-button>
+                <td><paper-button id="tb_01" class="turtlebot-connect" on-click="_connect">connect</paper-button>
             <tr>
                 <td>2
                 <td>tb_02
                 <td>Burger
-                <td><paper-button class="turtlebot-connect">connect</paper-button>
+                <td><paper-button id="tb_02" class="turtlebot-connect" on-click="_connect">connect</paper-button>
             <tr>
                 <td>3
                 <td>tb_03
                 <td>Burger
-                <td><paper-button class="turtlebot-connect">connect</paper-button>
+                <td><paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect</paper-button>
             <tr class="disabled">
                 <td>4
                 <td>tb_04
@@ -110,9 +110,10 @@
             static get properties() {
                 return {};
             }
-	    _connect() {
-	    	window.location.href = '/turtlebot';
-	    }
+            _connect(e) {
+                console.log(e.target.id);
+                window.location.href = "/turtlebot/"+e.target.id;
+            }
         }
         window.customElements.define(TurtlebotList.is, TurtlebotList);
     </script>
