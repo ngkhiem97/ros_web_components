@@ -8,96 +8,80 @@
 
 <dom-module id="turtlebot-list">
     <template>
+        <!-- Bootstrap styling -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <style>
             :host {
                 display: block;
                 font-family: 'Open Sans', sans-serif;
             }
-            h1 {
-                position: relative;
-                color: white;
-                padding-left: 40px;
+            .list-card {
+                margin: 10px;
             }
-            table {
-                background: #012B39;
-                border-radius: 0.25em;
-                border-collapse: collapse;
-                margin: 1em;
-            }
-            th {
-                border-bottom: 1px solid #364043;
-                color: #E2B842;
-                font-size: 0.85em;
-                font-weight: 600;
-                padding: 0.8em 1.5em;
-                text-align: left;
-            }
-            td {
-                color: #fff;
-                font-weight: 400;
-                padding: 0.65em 1em;
-            }
-            .disabled td {
-                color: #4F5F64;
-            }
-            tbody tr {
-                transition: background 0.25s ease;
-            }
-            tbody tr:hover {
-                background: #014055;
-            }
-            .turtlebot-connect {
-                background: #014055;
+            paper-button.turtlebot-connect {
+                background: gray;
             }
         </style>
 
         <!-- Connect to ROS Web Socket node -->
-        <ros-websocket auto id="ros" ros="{{ros}}"
-                       url="{{url}}"
-                       on-connection="_handleConnection"
-                       on-close="_handleClose"
-                       on-error="_handleError"
-        ></ros-websocket>
+        <ros-websocket auto id="ros" ros="{{ros}}" url="{{url}}" on-connection="_handleConnection"
+            on-close="_handleClose" on-error="_handleError"></ros-websocket>
 
         <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
-        <ros-topic
-                id="baseTopic"
-                ros="{{ros}}"
-                topic="cmd_vel"
-                msg-type="geometry_msgs/Twist"
-        ></ros-topic>
+        <ros-topic id="baseTopic" ros="{{ros}}" topic="cmd_vel" msg-type="geometry_msgs/Twist"></ros-topic>
 
         <!-- HTML goes here-->
-        <table><h1>Turtlebot list</h1>
-            <thead>
-            <tr>
-                <th>ID
-                <th>Name
-                <th>Model
-                <th>SLAM
-            </thead>
-            <tbody>
-            <tr>
-                <td>1
-                <td>tb_01
-                <td>Burger
-                <td><paper-button id="tb_01" class="turtlebot-connect" on-click="_connect">connect</paper-button>
-            <tr>
-                <td>2
-                <td>tb_02
-                <td>Burger
-                <td><paper-button id="tb_02" class="turtlebot-connect" on-click="_connect">connect</paper-button>
-            <tr>
-                <td>3
-                <td>tb_03
-                <td>Burger
-                <td><paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect</paper-button>
-            <tr class="disabled">
-                <td>4
-                <td>tb_04
-                <td>Burger
-            </tbody>
-        </table>
+        <div class="card list-card">
+            <div class="card-header">
+                <i class="fa fa-table"></i> Data Table Example
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID
+                                <th>Name
+                                <th>Model
+                                <th>SLAM
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1
+                                <td>tb_01
+                                <td>Burger
+                                <td>
+                                    <paper-button id="tb_01" class="turtlebot-connect" on-click="_connect">connect
+                                    </paper-button>
+                            </tr>
+                            <tr>
+                                <td>2
+                                <td>tb_02
+                                <td>Burger
+                                <td>
+                                    <paper-button id="tb_02" class="turtlebot-connect" on-click="_connect">connect
+                                    </paper-button>
+                            <tr>
+                                <td>3
+                                <td>tb_03
+                                <td>Burger
+                                <td>
+                                    <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
+                                    </paper-button>
+                            </tr>
+                            <tr class="disabled">
+                                <td>4
+                                <td>tb_04
+                                <td>Burger
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div>
     </template>
 
     <script>
@@ -111,8 +95,7 @@
                 return {};
             }
             _connect(e) {
-                console.log(e.target.id);
-                window.location.href = "/turtlebot/"+e.target.id;
+                window.location.href = "/turtlebot/" + e.target.id;
             }
         }
         window.customElements.define(TurtlebotList.is, TurtlebotList);
