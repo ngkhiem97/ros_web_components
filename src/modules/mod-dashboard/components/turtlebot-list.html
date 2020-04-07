@@ -12,9 +12,9 @@
     <template>
         <!-- Bootstrap styling -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap4.css" rel="stylesheet">
-
+        
         <style>
             :host {
                 display: block;
@@ -31,16 +31,214 @@
                 color: white;
                 background: #3B3A4D;
             }
+            @media (min-width: 576px) {
+                .card-columns {
+                    column-count: 1;
+                }
+            }
+            @media (min-width: 768px) {
+                .card-columns {
+                    column-count: 2;
+                }
+            }
+            @media (min-width: 1200px) {
+                .card-columns {
+                    column-count: 2;
+                }
+            }
         </style>
-
+        
         <!-- Connect to ROS Web Socket node -->
         <ros-websocket auto id="ros" ros="{{ros}}" url="{{url}}" on-connection="_handleConnection"
-            on-close="_handleClose" on-error="_handleError"></ros-websocket>
-
+        on-close="_handleClose" on-error="_handleError"></ros-websocket>
+        
         <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
         <ros-topic id="baseTopic" ros="{{ros}}" topic="cmd_vel" msg-type="geometry_msgs/Twist"></ros-topic>
-
-        <!-- HTML goes here-->
+        
+        <!-- Social cards -->
+        <div class="col-lg-8">
+            <div class="card-columns">
+                <div class="card mb-3">
+                    <a href="#">
+                        <img class="card-img-top img-fluid w-100" src="https://unsplash.it/700/450?image=610" alt="">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title mb-1"><a href="#">David Miller</a></h6>
+                        <p class="card-text small">These waves are looking pretty good today!
+                            <a href="#">#surfsup</a>
+                        </p>
+                    </div>
+                    <hr class="my-0">
+                    <div class="card-body py-2 small">
+                        <a class="mr-3 d-inline-block" href="#">
+                            <i class="fa fa-fw fa-thumbs-up"></i>Like
+                        </a>
+                        <a class="mr-3 d-inline-block" href="#">
+                            <i class="fa fa-fw fa-comment"></i>Comment
+                        </a>
+                        <a class="d-inline-block" href="#">
+                            <i class="fa fa-fw fa-share"></i>Share
+                        </a>
+                    </div>
+                    <hr class="my-0">
+                    <div class="card-body small bg-faded">
+                        <div class="media">
+                            <img class="d-flex mr-3" src="http://placehold.it/45x45" alt="">
+                            <div class="media-body">
+                                <h6 class="mt-0 mb-1"><a href="#">John Smith</a></h6>Very nice! I wish I was there! That looks amazing!
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item">
+                                        <a href="#">Like</a>
+                                    </li>
+                                    <li class="list-inline-item">·</li>
+                                    <li class="list-inline-item">
+                                        <a href="#">Reply</a>
+                                    </li>
+                                </ul>
+                                <div class="media mt-3">
+                                    <a class="d-flex pr-3" href="#">
+                                        <img src="http://placehold.it/45x45" alt="">
+                                    </a>
+                                    <div class="media-body">
+                                        <h6 class="mt-0 mb-1"><a href="#">David Miller</a></h6>Next time for sure!
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                                <a href="#">Like</a>
+                                            </li>
+                                            <li class="list-inline-item">·</li>
+                                            <li class="list-inline-item">
+                                                <a href="#">Reply</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer small text-muted">Posted 32 mins ago</div>
+                </div>
+                <div class="card mb-3">
+                    <a href="#">
+                        <img class="card-img-top img-fluid w-100" src="https://unsplash.it/700/450?image=610" alt="">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title mb-1"><a href="#">David Miller</a></h6>
+                        <p class="card-text small">These waves are looking pretty good today!
+                            <a href="#">#surfsup</a>
+                        </p>
+                    </div>
+                    <hr class="my-0">
+                    <div class="card-body py-2 small">
+                        <a class="mr-3 d-inline-block" href="#">
+                            <i class="fa fa-fw fa-thumbs-up"></i>Like
+                        </a>
+                        <a class="mr-3 d-inline-block" href="#">
+                            <i class="fa fa-fw fa-comment"></i>Comment
+                        </a>
+                        <a class="d-inline-block" href="#">
+                            <i class="fa fa-fw fa-share"></i>Share
+                        </a>
+                    </div>
+                    <hr class="my-0">
+                    <div class="card-body small bg-faded">
+                        <div class="media">
+                            <img class="d-flex mr-3" src="http://placehold.it/45x45" alt="">
+                            <div class="media-body">
+                                <h6 class="mt-0 mb-1"><a href="#">John Smith</a></h6>Very nice! I wish I was there! That looks amazing!
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item">
+                                        <a href="#">Like</a>
+                                    </li>
+                                    <li class="list-inline-item">·</li>
+                                    <li class="list-inline-item">
+                                        <a href="#">Reply</a>
+                                    </li>
+                                </ul>
+                                <div class="media mt-3">
+                                    <a class="d-flex pr-3" href="#">
+                                        <img src="http://placehold.it/45x45" alt="">
+                                    </a>
+                                    <div class="media-body">
+                                        <h6 class="mt-0 mb-1"><a href="#">David Miller</a></h6>Next time for sure!
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                                <a href="#">Like</a>
+                                            </li>
+                                            <li class="list-inline-item">·</li>
+                                            <li class="list-inline-item">
+                                                <a href="#">Reply</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer small text-muted">Posted 32 mins ago</div>
+                </div>
+                <div class="card mb-3">
+                    <a href="#">
+                        <img class="card-img-top img-fluid w-100" src="https://unsplash.it/700/450?image=610" alt="">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title mb-1"><a href="#">David Miller</a></h6>
+                        <p class="card-text small">These waves are looking pretty good today!
+                            <a href="#">#surfsup</a>
+                        </p>
+                    </div>
+                    <hr class="my-0">
+                    <div class="card-body py-2 small">
+                        <a class="mr-3 d-inline-block" href="#">
+                            <i class="fa fa-fw fa-thumbs-up"></i>Like
+                        </a>
+                        <a class="mr-3 d-inline-block" href="#">
+                            <i class="fa fa-fw fa-comment"></i>Comment
+                        </a>
+                        <a class="d-inline-block" href="#">
+                            <i class="fa fa-fw fa-share"></i>Share
+                        </a>
+                    </div>
+                    <hr class="my-0">
+                    <div class="card-body small bg-faded">
+                        <div class="media">
+                            <img class="d-flex mr-3" src="http://placehold.it/45x45" alt="">
+                            <div class="media-body">
+                                <h6 class="mt-0 mb-1"><a href="#">John Smith</a></h6>Very nice! I wish I was there! That looks amazing!
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item">
+                                        <a href="#">Like</a>
+                                    </li>
+                                    <li class="list-inline-item">·</li>
+                                    <li class="list-inline-item">
+                                        <a href="#">Reply</a>
+                                    </li>
+                                </ul>
+                                <div class="media mt-3">
+                                    <a class="d-flex pr-3" href="#">
+                                        <img src="http://placehold.it/45x45" alt="">
+                                    </a>
+                                    <div class="media-body">
+                                        <h6 class="mt-0 mb-1"><a href="#">David Miller</a></h6>Next time for sure!
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                                <a href="#">Like</a>
+                                            </li>
+                                            <li class="list-inline-item">·</li>
+                                            <li class="list-inline-item">
+                                                <a href="#">Reply</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer small text-muted">Posted 32 mins ago</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Turtlebot list table -->
         <div class="card list-card">
             <div class="card-header">
                 <i class="fa fa-table"></i> Turtlebot list
@@ -50,70 +248,81 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Robot ID
-                                <th>Status
-                                <th>Connected at
-                                <th>Model
-                                <th>Detail
-                                <th>SLAM
-                                <th>Navigation
+                                <th>Robot ID</th>
+                                <th>Status</th>
+                                <th>Connected at</th>
+                                <th>Model</th>
+                                <th>Detail</th>
+                                <th>SLAM</th>
+                                <th>Navigation</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>tb_01
-                                <td>Available
-                                <td>2013-06-23 05:09:12
-                                <td>Burger
+                                <td>tb_01</td>
+                                <td>Available</td>
+                                <td>2013-06-23 05:09:01</td>
+                                <td>Burger</td>
                                 <td>
                                     <paper-button class="turtlebot-detail">Show detail
                                     </paper-button>
+                                </td>
                                 <td>
                                     <paper-button id="tb_01" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
+                                </td>
                                 <td>
                                     <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>tb_02
-                                <td>Available
-                                <td>2013-06-23 05:09:12
-                                <td>Burger
+                                <td>tb_02</td>
+                                <td>Available</td>
+                                <td>2013-06-23 05:09:02</td>
+                                <td>Burger</td>
                                 <td>
                                     <paper-button class="turtlebot-detail">Show detail
                                     </paper-button>
+                                </td>
                                 <td>
                                     <paper-button id="tb_02" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
+                                </td>
                                 <td>
                                     <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
-                            <tr>
-                                <td>tb_03
-                                <td>Available
-                                <td>2013-06-23 05:09:12
-                                <td>Burger
-                                <td>
-                                    <paper-button class="turtlebot-detail">Show detail
-                                    </paper-button>
-                                <td>
-                                    <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
-                                    </paper-button>
-                                <td>
-                                    <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
-                                    </paper-button>
-                            </tr>
-                            <tr class="disabled">
-                                <td>tb_04
-                                <td>Disconnected
-                                <td>2013-06-23 05:09:12
-                                <td>Burger
-                                <td>
-                                    <paper-button class="turtlebot-detail">Show detail
-                                    </paper-button>
-                                <td>
-                                <td>
+                                </td>
+                                <tr>
+                                    <td>tb_03</td>
+                                    <td>Available</td>
+                                    <td>2013-06-23 05:09:03</td>
+                                    <td>Burger</td>
+                                    <td>
+                                        <paper-button class="turtlebot-detail">Show detail
+                                        </paper-button>
+                                    </td>
+                                    <td>
+                                        <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
+                                        </paper-button>
+                                    </td>
+                                    <td>
+                                        <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
+                                        </paper-button>
+                                    </td>
+                                </tr>
+                                <tr class="disabled">
+                                    <td>tb_04</td>
+                                    <td>Disconnected</td>
+                                    <td>2013-06-23 05:09:04</td>
+                                    <td>Burger</td>
+                                    <td>
+                                        <paper-button class="turtlebot-detail">Show detail
+                                        </paper-button>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             </tr>
                         </tbody>
                     </table>
@@ -122,12 +331,12 @@
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
     </template>
-
+    
     <script>
         /**
-         * @customElement
-         * @polymer
-         */
+        * @customElement
+        * @polymer
+        */
         class TurtlebotList extends Polymer.Element {
             static get is() { return 'turtlebot-list'; }
             static get properties() {
@@ -136,7 +345,9 @@
             ready() {
                 super.ready();
                 // Enable datatable js for turtlebot list table
-                $(this.$.dataTable).DataTable();
+                $(this.$.dataTable).DataTable({
+                    "lengthMenu": [[2, 4, -1], [2, 4, "All"]]
+                });
             }
             _connect(e) {
                 window.location.href = "/turtlebot/" + e.target.id;
