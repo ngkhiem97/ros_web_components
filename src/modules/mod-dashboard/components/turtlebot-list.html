@@ -3,14 +3,18 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
 
-<!-- Style import -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
+<!-- Script for data table -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap4.js" charset="utf-8"></script>
 
 <dom-module id="turtlebot-list">
     <template>
         <!-- Bootstrap styling -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap4.css" rel="stylesheet">
+
         <style>
             :host {
                 display: block;
@@ -19,8 +23,13 @@
             .list-card {
                 margin: 10px;
             }
+            paper-button.turtlebot-detail {
+                color: white;
+                background: #3B3A4D;
+            }
             paper-button.turtlebot-connect {
-                background: gray;
+                color: white;
+                background: #3B3A4D;
             }
         </style>
 
@@ -34,47 +43,77 @@
         <!-- HTML goes here-->
         <div class="card list-card">
             <div class="card-header">
-                <i class="fa fa-table"></i> Data Table Example
+                <i class="fa fa-table"></i> Turtlebot list
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID
-                                <th>Name
+                                <th>Robot ID
+                                <th>Status
+                                <th>Connected at
                                 <th>Model
+                                <th>Detail
                                 <th>SLAM
+                                <th>Navigation
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1
                                 <td>tb_01
+                                <td>Available
+                                <td>2013-06-23 05:09:12
                                 <td>Burger
+                                <td>
+                                    <paper-button class="turtlebot-detail">Show detail
+                                    </paper-button>
                                 <td>
                                     <paper-button id="tb_01" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
+                                <td>
+                                    <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
+                                    </paper-button>
                             </tr>
                             <tr>
-                                <td>2
                                 <td>tb_02
+                                <td>Available
+                                <td>2013-06-23 05:09:12
                                 <td>Burger
+                                <td>
+                                    <paper-button class="turtlebot-detail">Show detail
+                                    </paper-button>
                                 <td>
                                     <paper-button id="tb_02" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
+                                <td>
+                                    <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
+                                    </paper-button>
                             <tr>
-                                <td>3
                                 <td>tb_03
+                                <td>Available
+                                <td>2013-06-23 05:09:12
                                 <td>Burger
+                                <td>
+                                    <paper-button class="turtlebot-detail">Show detail
+                                    </paper-button>
+                                <td>
+                                    <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
+                                    </paper-button>
                                 <td>
                                     <paper-button id="tb_03" class="turtlebot-connect" on-click="_connect">connect
                                     </paper-button>
                             </tr>
                             <tr class="disabled">
-                                <td>4
                                 <td>tb_04
+                                <td>Disconnected
+                                <td>2013-06-23 05:09:12
                                 <td>Burger
+                                <td>
+                                    <paper-button class="turtlebot-detail">Show detail
+                                    </paper-button>
+                                <td>
+                                <td>
                             </tr>
                         </tbody>
                     </table>
@@ -93,6 +132,11 @@
             static get is() { return 'turtlebot-list'; }
             static get properties() {
                 return {};
+            }
+            ready() {
+                super.ready();
+                // Enable datatable js for turtlebot list table
+                $(this.$.dataTable).DataTable();
             }
             _connect(e) {
                 window.location.href = "/turtlebot/" + e.target.id;
