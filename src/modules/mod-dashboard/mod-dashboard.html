@@ -1,9 +1,7 @@
 <link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="./../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="./../../../bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="./components/map-gallery.html">
 <link rel="import" href="./components/sidebar-nav.html">
-<link rel="import" href="./components/turtlebot-list.html">
 
 <dom-module id="mod-dashboard">
     <template>
@@ -88,6 +86,33 @@
             }
             _pageChanged(view) {
                 this.dashboardTitle = view.toUpperCase();
+
+                if (!view) {
+                    return;
+                }
+
+                var resolvedPageUrl = '';
+                // Load page import on demand. Show 404 page if fails
+                switch (view) {
+                    case 'list':
+                        resolvedPageUrl = this.resolveUrl('components/turtlebot-list/turtlebot-list.html');
+                        break;
+                    case 'maps':
+                        resolvedPageUrl = this.resolveUrl('components/map-gallery/map-gallery.html');
+                        break;
+                    default:
+                        resolvedPageUrl = null;
+                }
+                
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true
+                );
+            }
+            _showPage404() {
+                this.page = '404';
             }
         }
         window.customElements.define(ModDashboard.is, ModDashboard);

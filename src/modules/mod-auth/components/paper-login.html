@@ -278,6 +278,10 @@ Custom property | Description | Default
              * Login when the submit button is pressed
              */
             _login() {
+                // Set default empty input error message
+                this.userInputErrMsg     = "Username required";
+                this.passwordInputErrMsg = "Password required";
+
                 // Get validated fields status
                 const userInputValid = this.$.userInput.validate();
                 const passInputValid = this.$.passInput.validate();
@@ -301,17 +305,28 @@ Custom property | Description | Default
                     // console.log(e.detail.response, "whoa! request complete");
                     // this.dispatchEvent(new CustomEvent('login-success', e));
 
+                    this._setCookie('authorization', e.detail.response.access_token, e.detail.response.expires_in)
                     window.location.replace("dashboard");
                 }
             }
 
             _loginError(e) {
                 this.loading = false;
+                this._displayUnauthorizedInput();
+            }
 
-                // Todo: handle response
-                console.log(e.detail.response, "request error");
+            _displayUnauthorizedInput() {
+                this.userInputErrMsg     = "Invalid username";
+                this.passwordInputErrMsg = "Invalid password";
                 this.$.userInput.invalid = true;
                 this.$.passInput.invalid = true;
+            }
+
+            _setCookie(cname, cvalue, exsecs) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exsecs*1000));
+                var expires = "expires="+ d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
             }
         }
 

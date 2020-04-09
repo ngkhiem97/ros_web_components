@@ -2,6 +2,8 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="modules/mod-auth/services/service-account.html">
+
 <dom-module id="app-bootstrap">
     <template>
         <style>
@@ -9,82 +11,102 @@
                 display: block;
             }
         </style>
-
+        
         <!-- Binds to the app's URL -->
         <app-location route="{{route}}"></app-location>
-
+        
         <!-- Manages the top-level routes data -->
         <app-route route="{{route}}"
-                   pattern="/:page"
-                   data="{{routeData}}"
-                   tail="{{subroute}}">
-        </app-route>
-
-        <!--
-            Authentication data
-            If authenticated, user can access to:
-                - Dashboard module [mod-dashboard]
-                - Turtlebot module [mod-turtlebot]
-        -->
-        <!-- <auth-data id="authData"></auth-data> -->
-
-        <!-- URL Routing elements -->
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+    
+    <!-- Ajax component for login service -->
+    <service-account id="serviceAccount" on-response="_authorizeSuccess"
+    on-error="_authorizeError"></service-account>
+    
+    <!-- URL Routing elements -->
+    <div id="appPage" hidden="true">
+        <iron-pages id="appPage" role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+            
             <!-- Authentication module -->
             <mod-auth name="auth" route="[[subroute]]"></mod-auth>
-
+            
             <!-- Dashboard module -->
             <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
-
+            
             <!-- Turtlebot module -->
             <mod-turtlebot name="turtlebot" route="[[subroute]]"></mod-turtlebot>
-
+            
             <!-- Not found -->
             <div name="404">
                 <h3>app-bootstrap::Page could not be found!{{page}}</h3>
             </div>
         </iron-pages>
+    </div>
+    
+</template>
 
-    </template>
-
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class AppBootstrap extends Polymer.Element {
-            static get is() { return 'app-bootstrap'; }
-            static get properties() {
-                return {
-                    page:{
-                        type: String,
-                        reflectToAttribute: true,
-                        observer: '_pageChanged'
-                    }
-                };
+<script>
+    /**
+    * @customElement
+    * @polymer
+    */
+    class AppBootstrap extends Polymer.Element {
+        static get is() { return 'app-bootstrap'; }
+        static get properties() {
+            return {
+                page:{
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged'
+                }
+            };
+        }
+        static get observers() {
+            return ['_routerChanged(routeData.page)'];
+        }
+        
+        _routerChanged(page) {
+            this._authorized();
+        }
+        _authorized() {
+            this.$.serviceAccount.check();
+        }
+        _authorizeSuccess(res) {
+            if (this.routeData.page == 'auth') {
+                this.page = 'dashboard';
+            } else {
+                this.page = this.routeData.page || 'dashboard';
             }
-            static get observers(){
-                return ['_routerChanged(routeData.page)'];
-            }
-            _routerChanged(page){
-                this.page = page || 'auth';
-            }
-            _pageChanged(page) {
-                // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl('modules/mod-'+page+'/mod-'+page+'.html');
-                Polymer.importHref(
-                    resolvedPageUrl,
-                    null,
-                    this._showPage404.bind(this),
-                    true
-                );
-            }
-            _showPage404() {
-                this.page = '404';
-            }
+            this.$.appPage.hidden = false;
+        }
+        _authorizeError(res) {
+            this.page = 'auth';
+            this.$.appPage.hidden = false;
         }
 
-        window.customElements.define(AppBootstrap.is, AppBootstrap);
-    </script>
+        _pageChanged(page) {
+            console.log(page, 'page');
+            
+            if (!page) {
+                return;
+            }
+            // Load page import on demand. Show 404 page if fails
+            var resolvedPageUrl = this.resolveUrl('modules/mod-'+page+'/mod-'+page+'.html');
+            Polymer.importHref(
+                resolvedPageUrl,
+                null,
+                this._showPage404.bind(this),
+                true
+            );
+        }
+        _showPage404() {
+            this.page = '404';
+        }
+    }
+    
+    window.customElements.define(AppBootstrap.is, AppBootstrap);
+</script>
 </dom-module>
