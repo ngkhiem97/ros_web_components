@@ -1,0 +1,151 @@
+<link rel="import" href="../../../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../../../bower_components/ros-topic/ros-topic.html">
+
+<dom-module id="turtlebot-detail-card">
+    <template>
+        <!-- Material styling -->
+        <link href="./../../../../../src/libraries/ajax/libs/materialize/0.97.6/css/materialize.min.css" rel="stylesheet">
+        
+        
+        <style>
+            :host {
+                display: block;
+            }
+            paper-card {
+                width: 100%;
+            }
+            img.detail-pic {
+                width: 40%;
+            }
+            .detail-data {
+                float: right;
+                width: 50%;
+                margin: 1vw;
+            }
+            
+            .detail-data .collection-item .row {
+                margin-bottom: 0;
+            }
+            .detail-data .collection-item .p {
+                margin: 0;
+            }
+            .detail-data .task-cat {
+                padding: 2px 4px;
+                color: #fff;
+                font-weight: 300;
+                font-size: 0.8rem;
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                background-clip: padding-box;
+            }
+            .detail-data .collection-item.avatar {
+                height: auto;
+            }
+            .detail-data p.collections-title {
+                font-size: 1.0rem;
+                padding: 0;
+                margin: 0;
+                font-weight: 500;
+            }
+            .detail-data p.collections-content {
+                font-size: 0.9rem;
+                padding: 0;
+                margin: 0;
+                font-weight: 400;
+            }
+        </style>
+        
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto id="ros" ros="{{ros}}" url="{{url}}" on-connection="_handleConnection"
+        on-close="_handleClose" on-error="_handleError"></ros-websocket>
+        
+        <ros-topic id="turtlebotDiagnostics" ros="{{ros}}" 
+            topic="/turtlebot_service/robot/{{detailInfo.robot_id}}/diagnostics" 
+            msg-type="diagnostic_msgs/DiagnosticArray" 
+            auto="true"
+            on-message="_handleMessage">
+        </ros-topic>
+        
+        <!-- Turtlebot detail -->
+        <paper-card>
+            <img class="detail-pic" src="{{turtlebotImg}}" alt="logo">
+            <div class="col s12 m12 l8 detail-data">
+                <ul id="projects-collection" class="collection">
+                    <li class="collection-item">
+                        <span class="collection-header">Robot Id: {{detailInfo.robot_id}}</span>
+                        <p>Connected at: {{detailInfo.created_at}}</p>
+                        <a href="#" class="secondary-content"><i class="mdi-action-grade"></i></a>
+                    </li>
+                    <template id="turtlebotComponents" is="dom-repeat" items="[[turtlebotComponents.status]]">
+                        <li class="collection-item">
+                            <div class="row">
+                                <div class="col s6">
+                                    <p class="collections-title">[[item.name]]</p>
+                                    <p class="collections-content">[[item.hardware_id]]</p>
+                                </div>
+                                <div class="col s3">
+                                    <span class$="[[_formatStatus(item.level)]]">[[item.message]]</span>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </paper-card>
+    </template>
+    
+    <script>
+        /**
+        * @customElement
+        * @polymer
+        */
+        class TurtlebotDetailCard extends Polymer.Element {
+            static get is() { return 'turtlebot-detail-card'; }
+            static get properties() {
+                return {
+                    turtlebotImg: {
+                        type:  String,
+                        value: function () {
+                            return this.resolveUrl("../../../img/Robotics-Mini-Bots.jpg");
+                        }
+                    },
+                    // Detail as: Robot Id, Created At
+                    detailInfo: {
+                        type: Object,
+                        observer: '_getDetailInfo'
+                    },
+                    // Hardware components
+                    turtlebotComponents: {
+                        type: Object
+                    }
+                };
+            }
+            _handleConnection() {
+                this.status = 'Connected to the websocket server.';
+                console.log(this.status);
+            }
+            _handleClose() {
+                this.status = 'Closed connection to the websocket server.';
+                console.log(this.status);
+            }
+            _handleError() {
+                this.status = 'Error connecting to the websocket server.';
+            }
+            _handleMessage(msg) {
+                this.turtlebotComponents = msg.detail;
+                this.$.turtlebotDiagnostics.unsubscribe();
+            }
+            _getDetailInfo(detailInfo) {
+                this.$.turtlebotDiagnostics.subscribe()
+            }
+            _formatStatus(level) {
+                console.log(level, "level");
+                return (level == 0) ? "task-cat green" : "task-cat red";
+            }
+        }
+        window.customElements.define(TurtlebotDetailCard.is, TurtlebotDetailCard);
+    </script>
+</dom-module>

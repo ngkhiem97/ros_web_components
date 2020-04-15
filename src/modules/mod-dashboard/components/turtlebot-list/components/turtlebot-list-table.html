@@ -1,0 +1,149 @@
+<link rel="import" href="../../../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../../../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../../../bower_components/ros-topic/ros-topic.html">
+
+<!-- Script for data table -->
+<script src="./../../../../../libraries/ajax/libs/jquery/3.3.1/jquery.js" charset="utf-8"></script>
+<script src="./../../../../../libraries/datatables/1.10.16/js/jquery.dataTables.js" charset="utf-8"></script>
+<script src="./../../../../../libraries/ajax/libs/datatables/1.10.16/js/dataTables.bootstrap4.js" charset="utf-8"></script>
+
+<dom-module id="turtlebot-list-table">
+    <template>
+        <!-- Bootstrap styling -->
+        <link href="./../../../../../src/libraries/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./../../../../../src/libraries/ajax/libs/datatables/1.10.16/css/dataTables.bootstrap4.css" rel="stylesheet">
+        
+        
+        <style>
+            :host {
+                display: block;
+                font-family: 'Open Sans', sans-serif;
+            }
+            paper-button.turtlebot-detail {
+                color: white;
+                background: #3B3A4D;
+            }
+            paper-button.turtlebot-connect {
+                color: white;
+                background: #3B3A4D;
+            }
+        </style>
+        
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto id="ros" ros="{{ros}}" url="{{url}}" on-connection="_handleConnection"
+        on-close="_handleClose" on-error="_handleError"></ros-websocket>
+        
+        <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
+        <ros-topic id="baseTopic" ros="{{ros}}" topic="cmd_vel" msg-type="geometry_msgs/Twist"></ros-topic>
+        
+        <!-- Turtlebot list table -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-table"></i> Turtlebot list
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Robot ID</th>
+                                <th>Status</th>
+                                <th>Connected at</th>
+                                <th>Model</th>
+                                <th>Detail</th>
+                                <th>SLAM</th>
+                                <th>Navigation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template id="turtlebotListTemplate" is="dom-repeat" items="{{robots}}">
+                                <tr>
+                                    <td>[[item.robot_id]]</td>
+                                    <td>Available</td>
+                                    <td>[[item.created_at]]</td>
+                                    <td>Burger</td>
+                                    <td>
+                                        <paper-button index="[[index]]" class="turtlebot-detail" on-click="_showDetail">Show detail
+                                        </paper-button>
+                                    </td>
+                                    <td>
+                                        <paper-button id="[[item.robot_id]]" class="turtlebot-connect" on-click="_connect">connect
+                                        </paper-button>
+                                    </td>
+                                    <td>
+                                        <paper-button id="[[item.robot_id]]" class="turtlebot-connect" on-click="_connect">connect
+                                        </paper-button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div>
+    </template>
+    
+    <script>
+        /**
+        * @customElement
+        * @polymer
+        */
+        class TurtlebotListTable extends Polymer.Element {
+            static get is() { return 'turtlebot-list-table'; }
+            static get properties() {
+                return {
+                    detailInfo: {
+                        type: Object,
+                        value: {}
+                    },
+                    robots: {
+                        type: Array,
+                        value: [
+                            {robot_id: "ttb_001", created_at: "2013-06-23 05:09:01"},
+                            {robot_id: "ttb_002", created_at: "2013-06-23 05:10:01"},
+                            {robot_id: "ttb_003", created_at: "2013-06-23 05:11:01"},
+                            {robot_id: "ttb_004", created_at: "2013-06-23 06:01:01"},
+                            {robot_id: "ttb_005", created_at: "2013-06-23 06:02:01"},
+                            {robot_id: "ttb_006", created_at: "2013-06-23 06:03:01"},
+                            {robot_id: "ttb_007", created_at: "2013-06-23 06:04:01"},
+                            {robot_id: "ttb_008", created_at: "2013-06-23 06:05:01"},
+                            {robot_id: "ttb_009", created_at: "2013-06-23 06:06:01"},
+                        ]
+                    }
+                }
+            }
+            ready() {
+                super.ready();
+                // Render the turtlebot dom-repeat
+                this.$.turtlebotListTemplate.render();
+                // Enable datatable js for turtlebot list table
+                $(this.$.dataTable).DataTable({
+                    "lengthMenu": [[2, 4, -1], [2, 4, "All"]]
+                });
+            }
+            _connect(e) {
+                window.location.href = "/turtlebot/" + e.target.id;
+            }
+            _handleConnection() {
+                this.status = 'Connected to the websocket server.';
+                console.log(this.status);
+            }
+            _handleClose() {
+                this.status = 'Closed connection to the websocket server.';
+                console.log(this.status);
+            }
+            _handleError() {
+                this.status = 'Error connecting to the websocket server.';
+                console.log(this.status);
+            }
+            _showDetail(e) {
+                this.detailInfo = this.robots[e.target.index];
+                this.dispatchEvent(new CustomEvent('show-detail', {detail: this.detailInfo}));
+            }
+        }
+        window.customElements.define(TurtlebotListTable.is, TurtlebotListTable);
+    </script>
+</dom-module>
