@@ -42,7 +42,7 @@
         <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
 
         <!-- Movement controller -->
-        <turtlebot-controller turtlebot-id="[[view]]"></turtlebot-controller>
+        <turtlebot-controller turtlebot-id="[[robotId]]"></turtlebot-controller>
 
         <!-- ROS Core status -->
         <ros-core></ros-core>
@@ -60,9 +60,11 @@
                 return {
                     view:{
                         type: String,
+                        observer: '_getRobotId'
                     },
                     route: Object,
-                    routeData: Object
+                    routeData: Object,
+                    robotId: String
                 };
             }
             ready() {
@@ -74,7 +76,7 @@
                         "background": "#111111",
                         "colladaLoader": "collada2",
                         "colladaServer": "http://localhost:8001/",
-                        "fixedFrame": this.view+"/map",
+                        "fixedFrame": this.robotId+"/map",
                         "url": "ws://localhost:9090",
                         "videoServer": "http://localhost:9999"
                     },
@@ -101,7 +103,7 @@
                             },
                             "continuous": true,
                             "opacity": "1",
-                            "topic": this.view+"/map"
+                            "topic": this.robotId+"/map"
                         },
                         "type": "occupancyGrid"
                         },
@@ -109,8 +111,8 @@
                         "isShown": true,
                         "name": "Robot model",
                         "options": {
-                            "param": this.view+"/robot_description",
-                            "prefix": this.view
+                            "param": this.robotId+"/robot_description",
+                            "prefix": this.robotId
                         },
                         "type": "urdf"
                         },
@@ -143,6 +145,9 @@
             _handleError() {
                 this.status = 'Error connecting to the websocket server.';
                 console.log(this.status);
+            }
+            _getRobotId(view) {
+                this.robotId = "/turtlebot_service/robot/" + view;
             }
         }
 
