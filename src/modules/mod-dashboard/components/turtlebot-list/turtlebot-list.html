@@ -13,10 +13,19 @@
             :host {
                 display: block;
             }
+            .detail-card {
+                margin: 1vw;
+            }
+            .list-table {
+                margin: 1vw;
+            }
         </style>
 
-        <turtlebot-detail-card></turtlebot-detail-card>
-        <turtlebot-list-table></turtlebot-list-table>
+        <div id="detailCard" hidden="true">
+            <turtlebot-detail-card class="detail-card" detail-info="{{detailInfo}}"></turtlebot-detail-card>
+        </div>
+        
+        <turtlebot-list-table class="list-table" detail-info="{{detailInfo}}" on-show-detail="_showDetail"></turtlebot-list-table>
 
     </template>
     
@@ -28,10 +37,18 @@
         class TurtlebotList extends Polymer.Element {
             static get is() { return 'turtlebot-list'; }
             static get properties() {
-                return {};
+                return {
+                    detailInfo: {
+                        type: Object,
+                        value: {}
+                    },
+                };
             }
-            ready() {
-                super.ready();
+            _showDetail(e) {
+                if (this.$.detailCard.hidden) {
+                    this.$.detailCard.hidden = false;
+                }
+                this.detailInfo = e.detail;
             }
         }
         window.customElements.define(TurtlebotList.is, TurtlebotList);

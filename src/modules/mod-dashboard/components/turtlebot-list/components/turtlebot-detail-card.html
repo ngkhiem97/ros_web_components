@@ -79,19 +79,21 @@
                         <p>Connected at: {{detailInfo.created_at}}</p>
                         <a href="#" class="secondary-content"><i class="mdi-action-grade"></i></a>
                     </li>
-                    <template id="turtlebotComponents" is="dom-repeat" items="[[turtlebotComponents.status]]">
-                        <li class="collection-item">
-                            <div class="row">
-                                <div class="col s6">
-                                    <p class="collections-title">[[item.name]]</p>
-                                    <p class="collections-content">[[item.hardware_id]]</p>
+                    <div id="turtlebotComponentsWrapper">
+                        <template id="turtlebotComponents" is="dom-repeat" items="[[turtlebotComponents.status]]">
+                            <li class="collection-item">
+                                <div class="row">
+                                    <div class="col s6">
+                                        <p class="collections-title">[[item.name]]</p>
+                                        <p class="collections-content">[[item.hardware_id]]</p>
+                                    </div>
+                                    <div class="col s3">
+                                        <span class$="[[_formatStatus(item.level)]]">[[item.message]]</span>
+                                    </div>
                                 </div>
-                                <div class="col s3">
-                                    <span class$="[[_formatStatus(item.level)]]">[[item.message]]</span>
-                                </div>
-                            </div>
-                        </li>
-                    </template>
+                            </li>
+                        </template>
+                    </div>
                 </ul>
             </div>
         </paper-card>
@@ -135,10 +137,12 @@
                 this.status = 'Error connecting to the websocket server.';
             }
             _handleMessage(msg) {
+                this.$.turtlebotComponentsWrapper.hidden = false;
                 this.turtlebotComponents = msg.detail;
                 this.$.turtlebotDiagnostics.unsubscribe();
             }
             _getDetailInfo(detailInfo) {
+                this.$.turtlebotComponentsWrapper.hidden = true;
                 this.$.turtlebotDiagnostics.subscribe()
             }
             _formatStatus(level) {

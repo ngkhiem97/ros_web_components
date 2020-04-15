@@ -17,29 +17,32 @@
                 width: 100%;
                 height: 100%;
             }
-            .main-menu {
+            .nav-bar {
+                position: fixed;
                 background: #343a40;
-                position: absolute;
                 top: 0;
                 bottom: 0;
                 height: 100%;
                 left: 0;
-                width: 180px;
+                width: 12vw;
                 overflow: hidden;
                 -webkit-transition: width .05s linear;
                 transition: width .05s linear;
                 --webkit-transform: translate(0) scale(1,1);
                 z-index: 1000;
             }
-            .main-menu>ul {
-                margin: 7px 0;
+            .nav-bar .nav-logo img {
+                width: 100%;
             }
-            .main-menu li {
+            .nav-bar>ul {
+                margin: 1vh 0;
+            }
+            .nav-bar li {
                 position: relative;
                 display: block;
-                width: 180px;
+                width: 12vw;
             }
-            .main-menu li>a {
+            .nav-bar li>a {
                 position: relative;
                 display: table;
                 border-collapse: collapse;
@@ -53,31 +56,31 @@
                 transition: all .1s linear;
                 height: 50px;
             }
-            .main-menu li>a:hover, .main-menu li>a:focus {
+            .nav-bar li>a:hover, .nav-bar li>a:focus {
                 text-decoration: none;
             }
-            .main-menu>ul.logout {
+            .nav-bar>ul.logout {
                 position: absolute;
                 left: 0;
                 bottom: 0;
             }
-            .main-menu .nav-icon {
+            .nav-bar .nav-icon {
                 position: relative;
                 display: table-cell;
-                width: 60px;
-                height: 36px;
+                width: 4vw;
+                height: 3vh;
                 text-align: center;
                 vertical-align: middle;
                 font-size: 18px;
             }
-            .main-menu .nav-text {
+            .nav-bar .nav-text {
                 position: relative;
                 display: table-cell;
                 vertical-align: middle;
-                width: 120px;
+                width: 8vw;
                 font-family: 'Titillium Web', sans-serif;
             }
-            .main-menu li:hover>a,nav.main-menu li.active>a,.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus,.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,.dropdown-menu>.active>a:focus,.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,.dashboard-page nav.dashboard-menu ul li.active a {
+            .nav-bar li:hover>a,nav.nav-bar li.active>a,.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus,.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,.dropdown-menu>.active>a:focus,.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,.dashboard-page nav.dashboard-menu ul li.active a {
                 color: #fff;
                 background-color: #5fa2db;
             }
@@ -94,7 +97,7 @@
                 padding: 0;
             }
             nav ul {
-                padding-top: 35px;
+                padding-top: 5vh;
             }
             @font-face {
                 font-family: 'Titillium Web';
@@ -105,8 +108,11 @@
         </style>
         
         <div class="area" id="area">
-            <nav class="main-menu">
+            <nav class="nav-bar">
                 <ul>
+                    <li class="nav-logo">
+                        <img src="[[logoImg]]"/>
+                    </li>
                     <li class="has-subnav">
                         <a href="/dashboard">
                             <iron-icon class="nav-icon" icon="dashboard"></iron-icon>
@@ -166,7 +172,13 @@
         class SidebarNav extends Polymer.Element {
             static get is() { return 'sidebar-nav'; }
             static get properties() {
-                return {};
+                return {
+                    logoImg: {
+                        type:  String,
+                        value: function () {
+                            return this.resolveUrl("../img/logo-without-background.png");
+                        }
+                    },};
             }
             _logout() {
                 this.$.serviceAccount.logout();
