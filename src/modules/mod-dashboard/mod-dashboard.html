@@ -1,8 +1,7 @@
 <link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="./../../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="./components/map-gallery.html">
+<link rel="import" href="./../../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="./components/sidebar-nav.html">
-<link rel="import" href="./components/turtlebot-list.html">
 
 <dom-module id="mod-dashboard">
     <template>
@@ -11,24 +10,22 @@
                 display: block;
             }
             .main-content {
-                width: 100%;
-                height: 100%;
+                left: 12vw;
+                right: 0px;
                 position: absolute;
-                right: 0;
-                left: 60px;
-                background: #105469;
-            }
-            #sidebar-nav:hover + #main-content {
-                left: 180px;
+                background: white;
             }
             map-gallery {
                 width: 80%;
-                margin-top: 10px;
-                margin-left: 10px;
+                margin-top: 1vw;
+                margin-left: 1vw;
             }
             ros-core {
-                margin-top: 10px;
-                margin-left: 10px;
+                margin-top: 10vw;
+                margin-left: 10vw;
+            }
+            paper-toolbar.title-toolbar {
+                --paper-toolbar-background: #343a40;
             }
         </style>
 
@@ -44,7 +41,9 @@
 
         <!-- dashboard content -->
         <div class="main-content" id="main-content">
-
+            <paper-toolbar class="title-toolbar">
+                <div slot="top" class="title">TurtlebotService > [[dashboardTitle]]</div>
+            </paper-toolbar>
             <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
 
                 <!-- display list of available turtlebot -->
@@ -69,8 +68,9 @@
                 return {
                     view:{
                         type: String,
-                        // observer: '_pageChanged'
+                        observer: '_pageChanged'
                     },
+                    dashboardTitle: String,
 		            route: Object,
     		        routeData: Object
                 };
@@ -84,11 +84,36 @@
             _routerChanged(view){
                 this.view = view || 'list';
             }
-            // _pageChanged(page, oldPage) {
-            //     console.log(this.route, 'route');
-            //     console.log(page, 'page');
-            //     console.log(oldPage, 'old page');
-            // }
+            _pageChanged(view) {
+                this.dashboardTitle = view.toUpperCase();
+
+                if (!view) {
+                    return;
+                }
+
+                var resolvedPageUrl = '';
+                // Load page import on demand. Show 404 page if fails
+                switch (view) {
+                    case 'list':
+                        resolvedPageUrl = this.resolveUrl('components/turtlebot-list/turtlebot-list.html');
+                        break;
+                    case 'maps':
+                        resolvedPageUrl = this.resolveUrl('components/map-gallery/map-gallery.html');
+                        break;
+                    default:
+                        resolvedPageUrl = null;
+                }
+                
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true
+                );
+            }
+            _showPage404() {
+                this.page = '404';
+            }
         }
         window.customElements.define(ModDashboard.is, ModDashboard);
     </script>
