@@ -135,7 +135,7 @@
                 console.log(this.status);
             }
             _handleMessage(msg) {
-                this.robots = msg.detail;
+                this.robots = msg.detail.robots;
             }
             _showDetail(e) {
                 this.detailInfo = this.robots[e.target.index];
