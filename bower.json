@@ -14,7 +14,8 @@
     "ros-topic": "jstnhuang/ros-topic#^1.0.0",
     "ros-service": "jstnhuang/ros-service#^2.0.1",
     "paper-password-input": "Collaborne/paper-password-input",
-    "paper-toolbar": "PolymerElements/paper-toolbar#2.0"
+    "paper-toolbar": "PolymerElements/paper-toolbar#2.0",
+    "paper-toast": "PolymerElements/paper-toast#2.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",

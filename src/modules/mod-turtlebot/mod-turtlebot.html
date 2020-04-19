@@ -1,8 +1,10 @@
 <link rel="import" href="./../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/ros-websocket/ros-websocket.html">
 <link rel="import" href="../../../bower_components/ros-rviz/ros-rviz.html">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../components/ros-core.html">
 <link rel="import" href="./components/turtlebot-controller.html">
+<link rel="import" href="./components/turtlebot-map-export.html">
 
 <dom-module id="mod-turtlebot">
     <template>
@@ -11,6 +13,11 @@
                 display: block;
                 height: 100vh;
                 margin: 0;
+            }
+            turtlebot-map-export {
+                position: absolute;
+                top: 8px;
+                right: 16px;
             }
             turtlebot-controller {
                 position: absolute;
@@ -32,14 +39,16 @@
         </app-route>
 
         <!-- Get ROS Web socket connection -->
-        <ros-websocket auto ros="{{ros}}"
-                       url="{{url}}"
-                       on-connection="_handleConnection"
-                       on-close="_handleClose"
-                       on-error="_handleError"></ros-websocket>
+        <ros-websocket auto ros="{{ros}}" url="{{url}}"></ros-websocket>
 
         <!-- Initialize ROS RViz DOM -->
         <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
+
+        <!-- Status of map exporting -->
+        <paper-toast id="mapExportToast" text="Successfully export scanned map!"></paper-toast>
+
+        <!-- Exporting map executing button -->
+        <turtlebot-map-export on-success="_mapExportSuccess"></turtlebot-map-export>
 
         <!-- Movement controller -->
         <turtlebot-controller turtlebot-id="[[robotId]]"></turtlebot-controller>
@@ -64,57 +73,58 @@
                     },
                     route: Object,
                     routeData: Object,
-                    robotId: String
+
+                    robotId: String,
                 };
             }
             ready() {
                 super.ready();
-                console.log("Run turtlebot module with turtlebot-id : " + this.view);
                 
+                // Configure rviz display
                 var config = {
                     "globalOptions": {
                         "background": "#111111",
                         "colladaLoader": "collada2",
                         "colladaServer": "http://localhost:8001/",
-                        "fixedFrame": this.robotId+"/map",
+                        "fixedFrame": "/turtlebot_service/robot/"+this.robotId+"/map",
                         "url": "ws://localhost:9090",
                         "videoServer": "http://localhost:9999"
                     },
                     "sidebarOpened": false,
                     "displays": [
                         {
-                        "isShown": true,
-                        "name": "Grid",
-                        "options": {
-                            "cellSize": "1",
-                            "color": "#cccccc",
-                            "numCells": "10"
-                        },
-                        "type": "grid"
-                        },
-                        {
-                        "isShown": true,
-                        "name": "Map",
-                        "options": {
-                            "color": {
-                            "r": 255,
-                            "g": 255,
-                            "b": 255
+                            "isShown": true,
+                            "name": "Grid",
+                            "options": {
+                                "cellSize": "1",
+                                "color": "#cccccc",
+                                "numCells": "10"
                             },
-                            "continuous": true,
-                            "opacity": "1",
-                            "topic": this.robotId+"/map"
-                        },
-                        "type": "occupancyGrid"
+                            "type": "grid"
                         },
                         {
-                        "isShown": true,
-                        "name": "Robot model",
-                        "options": {
-                            "param": this.robotId+"/robot_description",
-                            "prefix": this.robotId
+                            "isShown": true,
+                            "name": "Map",
+                            "options": {
+                                "color": {
+                                    "r": 255,
+                                    "g": 255,
+                                    "b": 255
+                                },
+                                "continuous": true,
+                                "opacity": "1",
+                                "topic": "/turtlebot_service/robot/"+this.robotId+"/map"
+                            },
+                            "type": "occupancyGrid"
                         },
-                        "type": "urdf"
+                        {
+                            "isShown": true,
+                            "name": "Robot model",
+                            "options": {
+                                "param": "/turtlebot_service/robot/"+this.robotId+"/robot_description",
+                                "prefix": "/turtlebot_service/robot/"+this.robotId
+                            },
+                            "type": "urdf"
                         },
                         // {
                         //     "isShown": true,
@@ -128,26 +138,19 @@
                 };
                 this.$.rviz.config = config;	
             }
+            // app-route handling
             static get observers(){
                 return ['_routerChanged(routeData.view)'];
             }
             _routerChanged(view){
                 this.view = view || '';
             }
-            _handleConnection() {
-                this.status = 'Connected to the websocket server.';
-                console.log(this.status);
-            }
-            _handleClose() {
-                this.status = 'Closed connection to the websocket server.';
-                console.log(this.status);
-            }
-            _handleError() {
-                this.status = 'Error connecting to the websocket server.';
-                console.log(this.status);
-            }
             _getRobotId(view) {
-                this.robotId = "/turtlebot_service/robot/" + view;
+                this.robotId = view;
+            }
+
+            _mapExportSuccess() {
+                this.$.mapExportToast.open();
             }
         }
 

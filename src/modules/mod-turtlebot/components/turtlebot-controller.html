@@ -23,11 +23,15 @@
                 --paper-slider-input: {
                     width: 100px;
                 }
+                width: 100%;
             }
             paper-button {
                 width: 100px;
                 background-color: #eee;
                 user-select: none;
+            }
+            paper-button.stop {
+                background-color: red;
             }
             #driving {
                 display: inline-block;
@@ -43,21 +47,23 @@
         <!-- Connect to ROS Web Socket node -->
         <ros-websocket auto id="ros" ros="{{ros}}"
                        url="{{url}}"
-                       on-connection="_handleConnection"
-                       on-close="_handleClose"
-                       on-error="_handleError"
         ></ros-websocket>
 
-        <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
+        <!-- Register to cmd_vel topic -->
         <ros-topic
-                id="baseTopic"
+                id="cmdVelTopic"
                 ros="{{ros}}"
-                topic="[[turtlebotId]]/cmd_vel"
+                topic="/turtlebot_service/robot/[[turtlebotId]]/cmd_vel"
                 msg-type="geometry_msgs/Twist"
         ></ros-topic>
 
         <paper-card id="driving" class="layout vertical">
             <div class="card-content">
+
+                <div>Run speed: <span id="ratingsLabel" class="caption">[[runSpeed]]</span></div><br>
+                <paper-slider id="run-speed" pin snaps max="2" max-markers="2" step="0.2" value="{{runSpeed}}"></paper-slider>
+                <div>Turn speed: <span id="ratingsLabel" class="caption">[[turnSpeed]]</span></div><br>
+                <paper-slider id="turn-speed" pin snaps max="2" max-markers="2" step="0.2" value="{{turnSpeed}}"></paper-slider>
 
                 <div class="layout horizontal">
                     <div class="flex"></div>
@@ -67,8 +73,14 @@
 
                 <div class="layout horizontal">
                     <paper-button raised noink on-down="_startLeft" on-up="_endBaseCommand"><iron-icon icon="undo"></iron-icon></paper-button>
-                    <paper-button raised noink on-down="_startBack" on-up="_endBaseCommand"><iron-icon icon="arrow-downward"></iron-icon></paper-button>
+                    <paper-button raised class="stop" on-down="_stop" on-up="_endBaseCommand">STOP</paper-button>
                     <paper-button raised noink on-down="_startRight" on-up="_endBaseCommand"><iron-icon icon="redo"></iron-icon></paper-button>
+                </div>
+
+                <div class="layout horizontal">
+                    <div class="flex"></div>
+                    <paper-button raised noink on-down="_startBack" on-up="_endBaseCommand"><iron-icon icon="arrow-downward"></iron-icon></paper-button>
+                    <div class="flex"></div>
                 </div>
 
                 <p>{{status}}</p>
@@ -82,6 +94,14 @@
                 return {
                     turtlebotId:{
                         type: String
+                    },
+                    runSpeed: {
+                        type: Number,
+                        value: 1
+                    },
+                    turnSpeed: {
+                        type: Number,
+                        value: 1
                     }
                 };
             }
@@ -92,30 +112,42 @@
                 this.hostname = window.location.hostname;
             }
 
-            _handleConnection() {
-                this.status = 'Connected to the websocket server.';
-                console.log(this.status);
-            }
-            _handleClose() {
-                this.status = 'Closed connection to the websocket server.';
-                console.log(this.status);
-            }
-            _handleError() {
-                this.status = 'Error connecting to the websocket server.';
-                console.log(this.status);
+            _stop(evt) {
+                evt.preventDefault();
+                this.status = 'Driving forward...';
+                var cmdVelTopic = this.$.cmdVelTopic;
+                if (this.baseCommand) {
+                    clearInterval(this.baseCommand);
+                }
+                var that = this;
+                this.baseCommand = setInterval(function() {
+                    cmdVelTopic.publish({
+                        linear: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        },
+                        angular: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        }
+                    });
+                }, 10);
             }
 
             _startForward(evt) {
                 evt.preventDefault();
                 this.status = 'Driving forward...';
-                var baseTopic = this.$.baseTopic;
+                var cmdVelTopic = this.$.cmdVelTopic;
                 if (this.baseCommand) {
                     clearInterval(this.baseCommand);
                 }
+                var that = this;
                 this.baseCommand = setInterval(function() {
-                    baseTopic.publish({
+                    cmdVelTopic.publish({
                         linear: {
-                            x: 0.1,
+                            x: that.runSpeed,
                             y: 0,
                             z: 0
                         },
@@ -131,14 +163,15 @@
             _startBack(evt) {
                 evt.preventDefault();
                 this.status = 'Driving forward...';
-                var baseTopic = this.$.baseTopic;
+                var cmdVelTopic = this.$.cmdVelTopic;
                 if (this.baseCommand) {
                     clearInterval(this.baseCommand);
                 }
+                var that = this;
                 this.baseCommand = setInterval(function() {
-                    baseTopic.publish({
+                    cmdVelTopic.publish({
                         linear: {
-                            x: -0.1,
+                            x: -(that.runSpeed),
                             y: 0,
                             z: 0
                         },
@@ -154,9 +187,10 @@
             _startLeft(evt) {
                 evt.preventDefault();
                 this.status = 'Turning left...';
-                var baseTopic = this.$.baseTopic;
+                var cmdVelTopic = this.$.cmdVelTopic;
+                var that = this;
                 this.baseCommand = setInterval(function() {
-                    baseTopic.publish({
+                    cmdVelTopic.publish({
                         linear: {
                             x: 0,
                             y: 0,
@@ -165,7 +199,7 @@
                         angular: {
                             x: 0,
                             y: 0,
-                            z: 0.5
+                            z: that.turnSpeed
                         }
                     });
                 }, 10);
@@ -174,21 +208,22 @@
             _startRight(evt) {
                 evt.preventDefault();
                 this.status = 'Driving forward...';
-                var baseTopic = this.$.baseTopic;
+                var cmdVelTopic = this.$.cmdVelTopic;
                 if (this.baseCommand) {
                     clearInterval(this.baseCommand);
                 }
+                var that = this;
                 this.baseCommand = setInterval(function() {
-                    baseTopic.publish({
+                    cmdVelTopic.publish({
                         linear: {
-                            x: 0.1,
+                            x: 0,
                             y: 0,
                             z: 0
                         },
                         angular: {
                             x: 0,
                             y: 0,
-                            z: -0.5
+                            z: -(that.turnSpeed)
                         }
                     });
                 }, 10);

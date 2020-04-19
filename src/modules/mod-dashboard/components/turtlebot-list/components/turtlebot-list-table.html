@@ -62,30 +62,28 @@
                                 <th>Navigation</th>
                             </tr>
                         </thead>
-                        <tbody id="talbeBody">
-                            
+                        <tbody>
+                            <template id="turtlebotListTemplate" is="dom-repeat" items="{{robots}}">
+                                <tr>
+                                    <td>[[item.robot_id]]</td>
+                                    <td>Available</td>
+                                    <td>[[item.created_at]]</td>
+                                    <td>Burger</td>
+                                    <td>
+                                        <paper-button index="[[index]]" class="turtlebot-detail" on-click="_showDetail">Show detail
+                                        </paper-button>
+                                    </td>
+                                    <td>
+                                        <paper-button id="[[item.robot_id]]" class="turtlebot-connect" on-click="_connect">connect
+                                        </paper-button>
+                                    </td>
+                                    <td>
+                                        <paper-button id="[[item.robot_id]]" class="turtlebot-connect" on-click="_connect">connect
+                                        </paper-button>
+                                    </td>
+                                </tr>
                         </tbody>
                     </table>
-                    <template id="turtlebotListTemplate" is="dom-repeat" items="{{robots}}">
-                        <tr>
-                            <td>[[item.robot_id]]</td>
-                            <td>Available</td>
-                            <td>[[item.created_at]]</td>
-                            <td>Burger</td>
-                            <td>
-                                <paper-button index="[[index]]" class="turtlebot-detail" on-click="_showDetail">Show detail
-                                </paper-button>
-                            </td>
-                            <td>
-                                <paper-button id="[[item.robot_id]]" class="turtlebot-connect" on-click="_connect">connect
-                                </paper-button>
-                            </td>
-                            <td>
-                                <paper-button id="[[item.robot_id]]" class="turtlebot-connect" on-click="_connect">connect
-                                </paper-button>
-                            </td>
-                        </tr>
-                    </template>
                 </div>
             </div>
             <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
@@ -109,20 +107,10 @@
                         type: Object,
                         value: []
                     },
-                    table: {}
                 }
             }
             ready() {
                 super.ready();
-                // Render the turtlebot dom-repeat
-                this.$.turtlebotListTemplate.render();
-
-                this.$.talbeBody.appendChild(this.$.turtlebotListTemplate);
-
-                // Enable datatable js for turtlebot list table
-                this.table = $(this.$.dataTable).DataTable({
-                    "lengthMenu": [[5, 10, -1], [5, 10, "All"]]
-                });
             }
             _connect(e) {
                 window.location.href = "/turtlebot/" + e.target.id;
@@ -141,11 +129,12 @@
             }
             _handleMessage(msg) {
                 this.robots = msg.detail.robots;
-                this.table.destroy();
-                this.$.talbeBody.appendChild(this.$.turtlebotListTemplate);
-                this.table = $(this.$.dataTable).DataTable({
+                this.$.turtlebotListTemplate.render();
+                // initialize datatable
+                $(this.$.dataTable).DataTable({
                     "lengthMenu": [[5, 10, -1], [5, 10, "All"]]
                 });
+                this.$.baseTopic.unsubscribe();
             }
             _showDetail(e) {
                 this.detailInfo = this.robots[e.target.index];
