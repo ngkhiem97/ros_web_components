@@ -1,7 +1,8 @@
 <link rel="import" href="../../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../../bower_components/ros-topic/ros-topic.html">
 
-<!-- Style import -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:500">
+<link rel="import" href="./components/map-item.html">
 
 <dom-module id="map-gallery">
     <template>
@@ -15,27 +16,7 @@
                 flex-wrap: wrap;
                 /* Compensate for excess margin on outer gallery flex items */
                 margin: -1rem -1rem;
-            }
-
-            .gallery-item {
-                /* Minimum width of 24rem and grow to fit available space */
-                flex: 1 0 24rem;
-                /* Margin value should be half of grid-gap value as margins on flex items don't collapse */
-                margin: 1rem;
-                box-shadow: 0.3rem 0.4rem 0.4rem rgba(0, 0, 0, 0.4);
-                overflow: hidden;
-            }
-
-            .gallery-image {
-                display: block;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 400ms ease-out;
-            }
-
-            .gallery-image:hover {
-                transform: scale(1.15);
+                margin-bottom: 1vh;
             }
 
             /*
@@ -53,28 +34,30 @@
                     grid-gap: 2rem;
                 }
 
-                .gallery,
-                .gallery-item {
+                .gallery {
                     margin: 0;
+                    margin-bottom: 1vh;
                 }
             }
-
         </style>
+        
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto id="ros" ros="{{ros}}" url="{{url}}" on-connection="_handleConnection"
+        on-close="_handleClose" on-error="_handleError"></ros-websocket>
+        
+        <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
+        <ros-topic id="robotListTopic" 
+            ros="{{ros}}" 
+            topic="/turtlebot_service/map_manager/list" 
+            msg-type="turtlebot_service/MapList"
+            auto="true"
+            on-message="_handleMessage">
+        </ros-topic>
 
         <div class="gallery">
-
-            <div class="gallery-item">
-                <img class="gallery-image" src="http://emanual.robotis.com/assets/images/platform/turtlebot3/slam/map.png" alt="person writing in a notebook beside by an iPad, laptop, printed photos, spectacles, and a cup of coffee on a saucer">
-            </div>
-
-            <div class="gallery-item">
-                <img class="gallery-image" src="http://emanual.robotis.com/assets/images/platform/turtlebot3/slam/map.png" alt="sunset behind San Francisco city skyline">
-            </div>
-
-            <div class="gallery-item">
-                <img class="gallery-image" src="http://emanual.robotis.com/assets/images/platform/turtlebot3/slam/map.png" alt="people holding umbrellas on a busy street at night lit by street lights and illuminated signs in Tokyo, Japan">
-            </div>
-
+            <template id="mapListTemplate" is="dom-repeat" items="{{maps}}">
+                <map-item robot-id=[[item.robot_id]] file-name=[[item.file_name]] time-stamp=[[item.time_stamp]]></map-item>
+            </template>
         </div>
     </template>
 
@@ -86,7 +69,16 @@
         class MapGallery extends Polymer.Element {
             static get is() { return 'map-gallery'; }
             static get properties() {
-                return {};
+                return {
+                    maps: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+            _handleMessage(msg) {
+                this.maps = msg.detail.maps.reverse();console.log(this.maps);
+                this.$.mapListTemplate.render();
             }
         }
         window.customElements.define(MapGallery.is, MapGallery);

@@ -1,0 +1,89 @@
+<link rel="import" href="../../../../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="map-item">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .gallery-item {
+                /* Minimum width of 24rem and grow to fit available space */
+                flex: 1 0 24rem;
+                /* Margin value should be half of grid-gap value as margins on flex items don't collapse */
+                margin: 1rem;
+                box-shadow: 0.3rem 0.4rem 0.4rem rgba(0, 0, 0, 0.4);
+                overflow: hidden;
+            }
+
+            .gallery-item h3 {
+                margin-left: 20px;
+            }
+
+            .gallery-image {
+                margin-bottom: 50px;
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 400ms ease-out;
+            }
+
+            .gallery-image:hover {
+                transform: scale(1.15);
+            }
+
+            /*
+
+            The following rule will only run if your browser supports CSS grid.
+
+            Remove or comment-out the code block below to see how the browser will fall-back to flexbox styling.
+
+            */
+
+            @supports (display: grid) {
+                .gallery-item {
+                    margin: 0;
+                }
+            }
+
+        </style>
+
+        <div class="gallery-item">
+            <img class="gallery-image" src="[[mapFileLocation]]">
+            <h3 class="gallery-robot-id">Robot id: [[robotId]]</h3>
+            <h3 class="gallery-time-stamp">Time stamp: [[timeStamp]]</h3>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class MapItem extends Polymer.Element {
+            static get is() { return 'map-item'; }
+            static get properties() {
+                return {
+                    robotId: {
+                        type: String
+                    },
+                    timeStamp: {
+                        type: String
+                    },
+                    fileName: {
+                        type: String,
+                        observer: '_getFileLocation'
+                    },
+                    mapFileLocation: {
+                        type: String
+                    }
+                };
+            }
+            _getFileLocation (fileName) {
+                this.mapFileLocation = "http://localhost:8001/map/"+fileName+".jpg";
+            }
+        }
+        window.customElements.define(MapItem.is, MapItem);
+    </script>
+</dom-module>

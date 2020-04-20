@@ -9,6 +9,15 @@
             :host {
                 display: block;
             }
+            paper-toolbar.title-toolbar {
+                --paper-toolbar-background: #343a40;
+                position: fixed;
+                z-index: 9999;
+                width: 100%;
+            }
+            iron-pages.page-content {
+                margin-top: 84px;
+            }
             .main-content {
                 left: 12vw;
                 right: 0px;
@@ -19,13 +28,6 @@
                 width: 80%;
                 margin-top: 1vw;
                 margin-left: 1vw;
-            }
-            ros-core {
-                margin-top: 10vw;
-                margin-left: 10vw;
-            }
-            paper-toolbar.title-toolbar {
-                --paper-toolbar-background: #343a40;
             }
         </style>
 
@@ -44,7 +46,7 @@
             <paper-toolbar class="title-toolbar">
                 <div slot="top" class="title">TurtlebotService > [[dashboardTitle]]</div>
             </paper-toolbar>
-            <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
+            <iron-pages class="page-content" selected="[[view]]" attr-for-selected="name" selected-attribute="visible">
 
                 <!-- display list of available turtlebot -->
                 <turtlebot-list name="list"></turtlebot-list>

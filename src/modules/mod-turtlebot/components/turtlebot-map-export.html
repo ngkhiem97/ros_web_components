@@ -1,0 +1,72 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../bower_components/ros-topic/ros-topic.html">
+
+<dom-module id="turtlebot-map-export">
+    <template>
+        <style is="custom-style" include="iron-flex"></style>
+        <style>
+            :host {
+                display: block;
+            }
+            paper-button {
+                background-color: #eee;
+            }
+        </style>
+
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto id="ros" ros="{{ros}}"
+            url="{{url}}"
+            on-connection="_handleConnection"
+            on-close="_handleClose"
+            on-error="_handleError"
+        ></ros-websocket>
+
+        <!-- Register to map_export topic -->
+        <ros-topic
+                id="mapExportRequestTopic"
+                ros="{{ros}}"
+                topic="turtlebot_service/map_export/request"
+                msg-type="std_msgs/String"
+        ></ros-topic>
+
+        <!-- Register to map_export topic -->
+        <ros-topic
+                id="mapExportStatusTopic"
+                ros="{{ros}}"
+                topic="turtlebot_service/map_export/status"
+                msg-type="turtlebot_service/MapStatus"
+                auto="true"
+                on-message="_handleMessage"
+        ></ros-topic>
+
+        <paper-button raised noink on-click="_exportMap">Export map</paper-button> 
+    </template>
+    <script>
+        class TurtlebotMapExport extends Polymer.Element {
+            static get is() { return 'turtlebot-map-export'; }
+            static get properties() {
+                return {
+                    turtlebotId:{
+                        type: String
+                    },
+                };
+            }
+
+            _exportMap() {
+                this.$.mapExportRequestTopic.publish({data: this.turtlebotId});
+            }
+
+            _handleMessage(msg) {
+                if (msg.detail.status == "Success") {
+                    this.dispatchEvent(new CustomEvent('success', {detail: {success: true}}));
+                } else {
+                    this.dispatchEvent(new CustomEvent('error', {detail: {success: false}}));
+                }
+            }
+        }
+
+        window.customElements.define(TurtlebotMapExport.is, TurtlebotMapExport);
+    </script>
+</dom-module>
