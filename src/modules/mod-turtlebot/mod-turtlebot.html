@@ -48,7 +48,7 @@
         <paper-toast id="mapExportToast" text="Successfully export scanned map!"></paper-toast>
 
         <!-- Exporting map executing button -->
-        <turtlebot-map-export on-success="_mapExportSuccess"></turtlebot-map-export>
+        <turtlebot-map-export turtlebot-id="[[robotId]]" on-success="_mapExportSuccess"></turtlebot-map-export>
 
         <!-- Movement controller -->
         <turtlebot-controller turtlebot-id="[[robotId]]"></turtlebot-controller>

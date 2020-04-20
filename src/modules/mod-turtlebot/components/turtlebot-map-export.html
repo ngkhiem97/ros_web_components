@@ -36,7 +36,7 @@
                 id="mapExportStatusTopic"
                 ros="{{ros}}"
                 topic="turtlebot_service/map_export/status"
-                msg-type="turtlebot_service/MapExportStatus"
+                msg-type="turtlebot_service/MapStatus"
                 auto="true"
                 on-message="_handleMessage"
         ></ros-topic>
@@ -46,9 +46,16 @@
     <script>
         class TurtlebotMapExport extends Polymer.Element {
             static get is() { return 'turtlebot-map-export'; }
+            static get properties() {
+                return {
+                    turtlebotId:{
+                        type: String
+                    },
+                };
+            }
 
             _exportMap() {
-                this.$.mapExportRequestTopic.publish("");
+                this.$.mapExportRequestTopic.publish({data: this.turtlebotId});
             }
 
             _handleMessage(msg) {
@@ -57,7 +64,6 @@
                 } else {
                     this.dispatchEvent(new CustomEvent('error', {detail: {success: false}}));
                 }
-                console.log(msg.detail);
             }
         }
 

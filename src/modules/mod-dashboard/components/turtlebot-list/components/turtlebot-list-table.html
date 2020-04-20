@@ -35,9 +35,9 @@
         on-close="_handleClose" on-error="_handleError"></ros-websocket>
         
         <!-- Register to cmd_vel topic published by turtlebot3_teleop node -->
-        <ros-topic id="baseTopic" 
+        <ros-topic id="robotListTopic" 
             ros="{{ros}}" 
-            topic="/turtlebot_service/robot_list" 
+            topic="/turtlebot_service/robot_manager/list" 
             msg-type="turtlebot_service/RobotList"
             auto="true"
             on-message="_handleMessage">
@@ -56,7 +56,6 @@
                                 <th>Robot ID</th>
                                 <th>Status</th>
                                 <th>Connected at</th>
-                                <th>Model</th>
                                 <th>Detail</th>
                                 <th>SLAM</th>
                                 <th>Navigation</th>
@@ -68,7 +67,6 @@
                                     <td>[[item.robot_id]]</td>
                                     <td>Available</td>
                                     <td>[[item.created_at]]</td>
-                                    <td>Burger</td>
                                     <td>
                                         <paper-button index="[[index]]" class="turtlebot-detail" on-click="_showDetail">Show detail
                                         </paper-button>
@@ -115,18 +113,6 @@
             _connect(e) {
                 window.location.href = "/turtlebot/" + e.target.id;
             }
-            _handleConnection() {
-                this.status = 'Connected to the websocket server.';
-                console.log(this.status);
-            }
-            _handleClose() {
-                this.status = 'Closed connection to the websocket server.';
-                console.log(this.status);
-            }
-            _handleError() {
-                this.status = 'Error connecting to the websocket server.';
-                console.log(this.status);
-            }
             _handleMessage(msg) {
                 this.robots = msg.detail.robots;
                 this.$.turtlebotListTemplate.render();
@@ -134,7 +120,7 @@
                 $(this.$.dataTable).DataTable({
                     "lengthMenu": [[5, 10, -1], [5, 10, "All"]]
                 });
-                this.$.baseTopic.unsubscribe();
+                this.$.robotListTopic.unsubscribe();
             }
             _showDetail(e) {
                 this.detailInfo = this.robots[e.target.index];
