@@ -17,36 +17,36 @@
         
         <!-- Manages the top-level routes data -->
         <app-route route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}">
-    </app-route>
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}">
+        </app-route>
     
-    <!-- Ajax component for login service -->
-    <service-account id="serviceAccount" on-response="_authorizeSuccess"
-    on-error="_authorizeError"></service-account>
-    
-    <!-- URL Routing elements -->
-    <div id="appPage" hidden="true">
-        <iron-pages id="appPage" role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-            
-            <!-- Authentication module -->
-            <mod-auth name="auth" route="[[subroute]]"></mod-auth>
-            
-            <!-- Dashboard module -->
-            <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
-            
-            <!-- Turtlebot module -->
-            <mod-turtlebot name="turtlebot" route="[[subroute]]"></mod-turtlebot>
-            
-            <!-- Not found -->
-            <div name="404">
-                <h3>app-bootstrap::Page could not be found!{{page}}</h3>
-            </div>
-        </iron-pages>
-    </div>
-    
-</template>
+        <!-- Ajax component for login service -->
+        <service-account id="serviceAccount" on-response="_authorizeSuccess"
+            on-error="_authorizeError"></service-account>
+        
+        <!-- URL Routing elements -->
+        <div id="appPage" hidden="true">
+            <iron-pages id="appPage" role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+                
+                <!-- Authentication module -->
+                <mod-auth name="auth" route="[[subroute]]"></mod-auth>
+                
+                <!-- Dashboard module -->
+                <mod-dashboard name="dashboard" route="[[subroute]]"></mod-dashboard>
+                
+                <!-- Turtlebot module -->
+                <mod-turtlebot name="turtlebot" route="[[subroute]]"></mod-turtlebot>
+                
+                <!-- Not found -->
+                <div name="404">
+                    <h3>app-bootstrap::Page could not be found!{{page}}</h3>
+                </div>
+            </iron-pages>
+        </div>
+        
+    </template>
 
 <script>
     /**
@@ -69,26 +69,24 @@
         }
         
         _routerChanged(page) {
-            this.$.appPage.hidden = false;
-            this.page = page;
-            // this._authorized();
+            this._authorized();
         }
-        // _authorized() {
-        //     this.$.serviceAccount.check();
-        // }
-        // _authorizeSuccess(res) {
-        //     if (this.routeData.page == 'auth') {
-        //         this.page = 'dashboard';
-        //     } else {
-        //         this.page = this.routeData.page || 'dashboard';
-        //     }
-        //     this.$.appPage.hidden = false;
-        // }
-        // _authorizeError(res) {
-        //     this.subroute = {}; // resest the subroute.          ex: /dashboard/list -> /dashboard
-        //     this.page = 'auth'; // return to authorization page. ex: /dashboard -> /auth
-        //     this.$.appPage.hidden = false;
-        // }
+        _authorized() {
+            this.$.serviceAccount.check();
+        }
+        _authorizeSuccess(res) {
+            if (this.routeData.page == 'auth') {
+                this.page = 'dashboard';
+            } else {
+                this.page = this.routeData.page || 'dashboard';
+            }
+            this.$.appPage.hidden = false;
+        }
+        _authorizeError(res) {
+            this.subroute = {}; // resest the subroute.          ex: /dashboard/list -> /dashboard
+            this.page = 'auth'; // return to authorization page. ex: /dashboard -> /auth
+            this.$.appPage.hidden = false;
+        }
 
         // After successfully resolved page
         _pageChanged(page) {
