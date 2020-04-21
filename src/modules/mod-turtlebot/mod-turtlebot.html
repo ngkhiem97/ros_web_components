@@ -1,61 +1,39 @@
-<link rel="import" href="./../../../bower_components/app-route/app-route.html">
-<link rel="import" href="../../../bower_components/ros-websocket/ros-websocket.html">
-<link rel="import" href="../../../bower_components/ros-rviz/ros-rviz.html">
-<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../components/ros-core.html">
-<link rel="import" href="./components/turtlebot-controller.html">
-<link rel="import" href="./components/turtlebot-map-export.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 
 <dom-module id="mod-turtlebot">
     <template>
         <style>
             :host {
                 display: block;
-                height: 100vh;
-                margin: 0;
-            }
-            turtlebot-map-export {
-                position: absolute;
-                top: 8px;
-                right: 16px;
-            }
-            turtlebot-controller {
-                position: absolute;
-                bottom: 8px;
-                right: 16px;
-            }
-            ros-core {
-                position: absolute;
-                bottom: 8px;
-                left: 16px;
             }
         </style>
 
-        <!-- Manages the routes data -->
+        <!-- manages the routes data -->
         <app-route
                 route="[[route]]"
-                pattern="/:view"
-                data="{{routeData}}">
+                pattern="/:page"
+                data="{{routeData}}"
+                tail="{{subroute}}">
         </app-route>
 
-        <!-- Get ROS Web socket connection -->
-        <ros-websocket auto ros="{{ros}}" url="{{url}}"></ros-websocket>
+        <!-- content -->
+        <div class="main-content" id="main-content">
+            <iron-pages class="page-content" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
 
-        <!-- Initialize ROS RViz DOM -->
-        <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
+                <!-- run SLAM control mode -->
+                <turtlebot-slam name="slam" route="[[subroute]]"></turtlebot-slam>
 
-        <!-- Status of map exporting -->
-        <paper-toast id="mapExportToast" text="Successfully export scanned map!"></paper-toast>
-
-        <!-- Exporting map executing button -->
-        <turtlebot-map-export turtlebot-id="[[robotId]]" on-success="_mapExportSuccess"></turtlebot-map-export>
-
-        <!-- Movement controller -->
-        <turtlebot-controller turtlebot-id="[[robotId]]"></turtlebot-controller>
-
-        <!-- ROS Core status -->
-        <ros-core></ros-core>
-
+                <!-- run Navigation control mode -->
+                <turtlebot-navigation name="navigation" route="[[subroute]]"></turtlebot-navigation>
+            
+                <!-- Not found -->
+                <div name="404">
+                    <h3>app-bootstrap::Page could not be found!{{page}}</h3>
+                </div>
+            </iron-pages>
+        </div>
     </template>
 
     <script>
@@ -67,90 +45,40 @@
             static get is() { return 'mod-turtlebot'; }
             static get properties() {
                 return {
-                    view:{
+                    page:{
                         type: String,
-                        observer: '_getRobotId'
+                        reflectToAttribute: true,
+                        observer: '_pageChanged'
                     },
-                    route: Object,
-                    routeData: Object,
-
-                    robotId: String,
                 };
             }
-            ready() {
-                super.ready();
+            
+            // Resolving page by router URL
+            static get observers() {
+                return ['_routerChanged(routeData.page)'];
+            }
+            _routerChanged(page) {
+                this.page = page;
+            }
+
+            // After successfully resolved page
+            _pageChanged(page) {
+
+                if (!this.page || this.page == '404') {
+                    return;
+                }
                 
-                // Configure rviz display
-                var config = {
-                    "globalOptions": {
-                        "background": "#111111",
-                        "colladaLoader": "collada2",
-                        "colladaServer": "http://localhost:8001/",
-                        "fixedFrame": "/turtlebot_service/robot/"+this.robotId+"/map",
-                        "url": "ws://localhost:9090",
-                        "videoServer": "http://localhost:9999"
-                    },
-                    "sidebarOpened": false,
-                    "displays": [
-                        {
-                            "isShown": true,
-                            "name": "Grid",
-                            "options": {
-                                "cellSize": "1",
-                                "color": "#cccccc",
-                                "numCells": "10"
-                            },
-                            "type": "grid"
-                        },
-                        {
-                            "isShown": true,
-                            "name": "Map",
-                            "options": {
-                                "color": {
-                                    "r": 255,
-                                    "g": 255,
-                                    "b": 255
-                                },
-                                "continuous": true,
-                                "opacity": "1",
-                                "topic": "/turtlebot_service/robot/"+this.robotId+"/map"
-                            },
-                            "type": "occupancyGrid"
-                        },
-                        {
-                            "isShown": true,
-                            "name": "Robot model",
-                            "options": {
-                                "param": "/turtlebot_service/robot/"+this.robotId+"/robot_description",
-                                "prefix": "/turtlebot_service/robot/"+this.robotId
-                            },
-                            "type": "urdf"
-                        },
-                        // {
-                        //     "isShown": true,
-                        //     "name": "Interactive Markers",
-                        //     "options": {
-                        //         "topic": "/map_annotator/map_poses"
-                        //     },
-                        //     "type": "interactiveMarkers"
-                        // }
-                    ]
-                };
-                this.$.rviz.config = config;	
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('sub-modules/'+this.page+'/turtlebot-'+this.page+'.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true
+                );
             }
-            // app-route handling
-            static get observers(){
-                return ['_routerChanged(routeData.view)'];
-            }
-            _routerChanged(view){
-                this.view = view || '';
-            }
-            _getRobotId(view) {
-                this.robotId = view;
-            }
-
-            _mapExportSuccess() {
-                this.$.mapExportToast.open();
+            _showPage404() {
+                this.page = '404';
             }
         }
 
