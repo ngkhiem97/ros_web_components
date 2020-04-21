@@ -111,7 +111,7 @@
                 super.ready();
             }
             _connect(e) {
-                window.location.href = "/turtlebot/slam" + e.target.id;
+                window.location.href = "/turtlebot/slam/" + e.target.id;
             }
             _handleMessage(msg) {
                 this.robots = msg.detail.robots;
