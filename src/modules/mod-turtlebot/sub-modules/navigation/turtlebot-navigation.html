@@ -1,0 +1,132 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../../../bower_components/ros-rviz/ros-rviz.html">
+<link rel="import" href="../../components/turtlebot-controller.html">
+
+<dom-module id="turtlebot-navigation">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            turtlebot-controller {
+                position: absolute;
+                bottom: 8px;
+                left: 16px;
+            }
+        </style>
+
+        <!-- Manages the routes data -->
+        <app-route
+                route="[[route]]"
+                pattern="/:view"
+                data="{{routeData}}">
+        </app-route>
+
+        <!-- Get ROS Web socket connection -->
+        <ros-websocket auto ros="{{ros}}" url="{{url}}"></ros-websocket>
+
+        <!-- Initialize ROS RViz DOM -->
+        <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
+
+        <!-- Movement controller -->
+        <turtlebot-controller turtlebot-id="[[robotId]]"></turtlebot-controller>
+
+    </template>
+    
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class TurtlebotNavigation extends Polymer.Element {
+            static get is() { return 'turtlebot-navigation'; }
+            static get properties() {
+                return {
+                    view:{
+                        type: String,
+                        observer: '_getRobotId'
+                    },
+                    route: Object,
+                    routeData: Object,
+
+                    robotId: String,
+                };
+            }
+            ready() {
+                super.ready();
+                
+                // Configure rviz display
+                var config = {
+                    "globalOptions": {
+                        "background": "#111111",
+                        "colladaLoader": "collada2",
+                        "colladaServer": "http://turtlebot-service.com:8001/",
+                        "fixedFrame": "/turtlebot_service/robot/"+this.robotId+"/map",
+                        "url": "ws://turtlebot-service.com:9090",
+                        "videoServer": "http://turtlebot-service.com:9999"
+                    },
+                    "sidebarOpened": false,
+                    "displays": [
+                        {
+                            "isShown": true,
+                            "name": "Grid",
+                            "options": {
+                                "cellSize": "1",
+                                "color": "#cccccc",
+                                "numCells": "10"
+                            },
+                            "type": "grid"
+                        },
+                        {
+                            "isShown": true,
+                            "name": "Map",
+                            "options": {
+                                "color": {
+                                    "r": 255,
+                                    "g": 255,
+                                    "b": 255
+                                },
+                                "continuous": true,
+                                "opacity": "1",
+                                "topic": "/turtlebot_service/robot/"+this.robotId+"/map"
+                            },
+                            "type": "occupancyGrid"
+                        },
+                        {
+                            "isShown": true,
+                            "name": "Robot model",
+                            "options": {
+                                "param": "/turtlebot_service/robot/"+this.robotId+"/robot_description",
+                                "prefix": "/turtlebot_service/robot/"+this.robotId
+                            },
+                            "type": "urdf"
+                        },
+                        // {
+                        //     "isShown": true,
+                        //     "name": "Interactive Markers",
+                        //     "options": {
+                        //         "topic": "/map_annotator/map_poses"
+                        //     },
+                        //     "type": "interactiveMarkers"
+                        // }
+                    ]
+                };
+                this.$.rviz.config = config;	
+            }
+            // app-route handling
+            static get observers(){
+                return ['_routerChanged(routeData.view)'];
+            }
+            _routerChanged(view){
+                this.view = view || '';
+            }
+            _getRobotId(view) {
+                console.log(view);
+                this.robotId = view;
+            }
+        }
+
+        window.customElements.define(TurtlebotNavigation.is, TurtlebotNavigation);
+    </script>
+</dom-module>
