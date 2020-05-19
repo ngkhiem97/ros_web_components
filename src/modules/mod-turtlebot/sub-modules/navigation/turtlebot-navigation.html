@@ -2,6 +2,7 @@
 <link rel="import" href="../../../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../../../bower_components/ros-rviz/ros-rviz.html">
 <link rel="import" href="../../components/turtlebot-controller.html">
+<link rel="import" href="../../components/turtlebot-pose-action.html">
 
 <dom-module id="turtlebot-navigation">
     <template>
@@ -11,6 +12,11 @@
                 height: 100vh;
                 width: 100vw;
                 margin: 0;
+            }
+            turtlebot-pose-action {
+                position: absolute;
+                top: 8px;
+                right: 16px;
             }
             turtlebot-controller {
                 position: absolute;
@@ -32,8 +38,11 @@
         <!-- Initialize ROS RViz DOM -->
         <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
 
+        <!-- Pose action -->
+        <turtlebot-pose-action></turtlebot-pose-action>
+
         <!-- Movement controller -->
-        <turtlebot-controller turtlebot-id="[[robotId]]"></turtlebot-controller>
+        <turtlebot-controller></turtlebot-controller>
 
     </template>
     
@@ -64,10 +73,10 @@
                     "globalOptions": {
                         "background": "#111111",
                         "colladaLoader": "collada2",
-                        "colladaServer": "http://turtlebot-service.com:8001/",
-                        "fixedFrame": "/turtlebot_service/robot/"+this.robotId+"/map",
-                        "url": "ws://turtlebot-service.com:9090",
-                        "videoServer": "http://turtlebot-service.com:9999"
+                        "colladaServer": "http://localhost:8001/",
+                        "fixedFrame": "/map",
+                        "url": "ws://localhost:9090",
+                        "videoServer": "http://localhost:9999"
                     },
                     "sidebarOpened": false,
                     "displays": [
@@ -92,7 +101,7 @@
                                 },
                                 "continuous": true,
                                 "opacity": "1",
-                                "topic": "/turtlebot_service/robot/"+this.robotId+"/map"
+                                "topic": "/map"
                             },
                             "type": "occupancyGrid"
                         },
@@ -100,19 +109,19 @@
                             "isShown": true,
                             "name": "Robot model",
                             "options": {
-                                "param": "/turtlebot_service/robot/"+this.robotId+"/robot_description",
-                                "prefix": "/turtlebot_service/robot/"+this.robotId
+                                "param": "/robot_description",
+                                "prefix": ""
                             },
                             "type": "urdf"
                         },
-                        // {
-                        //     "isShown": true,
-                        //     "name": "Interactive Markers",
-                        //     "options": {
-                        //         "topic": "/map_annotator/map_poses"
-                        //     },
-                        //     "type": "interactiveMarkers"
-                        // }
+                        {
+                            "isShown": true,
+                            "name": "Interactive Markers",
+                            "options": {
+                                "topic": "/marker_server/map_poses"
+                            },
+                            "type": "interactiveMarkers"
+                        }
                     ]
                 };
                 this.$.rviz.config = config;	

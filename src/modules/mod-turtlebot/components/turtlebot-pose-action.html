@@ -1,0 +1,87 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/ros-websocket/ros-websocket.html">
+<link rel="import" href="../../../../bower_components/ros-topic/ros-topic.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="turtlebot-pose-action">
+    <template>
+        <style is="custom-style" include="iron-flex"></style>
+        <style>
+            :host {
+                display: block;
+            }
+            h2 {
+                text-align: center;
+            }
+            paper-button {
+                background-color: #eee;
+            }
+        </style>
+
+        <!-- Connect to ROS Web Socket node -->
+        <ros-websocket auto id="ros" ros="{{ros}}"
+                       url="{{url}}"
+        ></ros-websocket>
+
+        <!-- Register to user_actions topic -->
+        <ros-topic
+            auto
+            id="userActions"
+            topic="/marker_server/user_actions"
+            ros="{{ros}}"
+            msg-type="turtlebot_service/UserAction"
+        ></ros-topic>
+
+        <paper-card>
+            <div class="card-content">
+                <h2>Pose action</h2> 
+                <div class="layout horizontal">
+                    <paper-button raised noink on-tap="_setInitialPose">Set initial</paper-button>
+                    <paper-button raised noink on-tap="_goTo">Go to</paper-button>
+                </div>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        class TurtlebotPoseAction extends Polymer.Element {
+            static get is() { return 'turtlebot-pose-action'; }
+            static get properties() {
+                return {
+                    turtlebotId:{
+                        type: String
+                    }
+                };
+            }
+
+            ready(evt) {
+                super.ready();
+                var msg = {
+                    command: 'create',
+                    name: 'navigation'
+                };     
+                this.$.userActions.publish(msg);
+            }
+
+            _setInitialPose(evt) {
+                var msg = {
+                    command: 'init',
+                    name: 'navigation'
+                };
+                this.$.userActions.publish(msg);
+            }
+
+            _goTo(evt) {
+                var msg = {
+                    command: 'goto',
+                    name: 'navigation'
+                };
+                this.$.userActions.publish(msg);
+            }
+        }
+
+        window.customElements.define(TurtlebotPoseAction.is, TurtlebotPoseAction);
+    
+    </script>
+</dom-module>

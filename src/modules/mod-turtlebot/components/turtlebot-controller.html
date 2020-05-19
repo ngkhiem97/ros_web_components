@@ -53,7 +53,7 @@
         <ros-topic
                 id="cmdVelTopic"
                 ros="{{ros}}"
-                topic="/turtlebot_service/robot/[[turtlebotId]]/cmd_vel"
+                topic="/cmd_vel"
                 msg-type="geometry_msgs/Twist"
         ></ros-topic>
 
@@ -104,12 +104,6 @@
                         value: 1
                     }
                 };
-            }
-
-            ready() {
-                super.ready();
-                console.log("Running turtlebot controller with turtebot-id: " + this.turtlebotId);
-                this.hostname = window.location.hostname;
             }
 
             _stop(evt) {
