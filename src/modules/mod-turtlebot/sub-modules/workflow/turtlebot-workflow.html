@@ -1,26 +1,14 @@
-<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../../bower_components/ros-websocket/ros-websocket.html">
 <link rel="import" href="../../../../../bower_components/ros-rviz/ros-rviz.html">
-<link rel="import" href="../../components/turtlebot-controller.html">
-<link rel="import" href="../../components/turtlebot-pose-action.html">
 
-<dom-module id="turtlebot-navigation">
+<dom-module id="turtlebot-workflow">
     <template>
         <style>
             :host {
                 display: block;
                 height: 100vh;
-                width: 100vw;
                 margin: 0;
-            }
-            turtlebot-pose-action {
-                position: absolute;
-                top: 8px;
-                right: 16px;
-            }
-            turtlebot-controller {
-                position: absolute;
-                bottom: 8px;
-                right: 16px;
             }
         </style>
 
@@ -30,12 +18,6 @@
         <!-- Initialize ROS RViz DOM -->
         <ros-rviz id="rviz" ros="{{ros}}" websocket-url="{{url}}"></ros-rviz>
 
-        <!-- Pose action -->
-        <turtlebot-pose-action></turtlebot-pose-action>
-
-        <!-- Movement controller -->
-        <turtlebot-controller></turtlebot-controller>
-
     </template>
     
     <script>
@@ -43,8 +25,8 @@
          * @customElement
          * @polymer
          */
-        class TurtlebotNavigation extends Polymer.Element {
-            static get is() { return 'turtlebot-navigation'; }
+        class TurtlebotWorkflow extends Polymer.Element {
+            static get is() { return 'turtlebot-workflow'; }
             static get properties() {
                 return {
                 };
@@ -110,18 +92,8 @@
                 };
                 this.$.rviz.config = config;	
             }
-            // app-route handling
-            static get observers(){
-                return ['_routerChanged(routeData.view)'];
-            }
-            _routerChanged(view){
-                this.view = view || '';
-            }
-            _getRobotId(view) {
-                this.robotId = view;
-            }
         }
 
-        window.customElements.define(TurtlebotNavigation.is, TurtlebotNavigation);
+        window.customElements.define(TurtlebotWorkflow.is, TurtlebotWorkflow);
     </script>
 </dom-module>

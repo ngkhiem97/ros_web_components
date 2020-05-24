@@ -19,14 +19,22 @@
             .list-table {
                 margin: 1vw;
             }
+            paper-button#refresh-table {
+                margin: 1vw;
+                color: white;
+                background: #3B3A4D;
+            }
         </style>
 
         <div id="detailCard" hidden="true">
             <turtlebot-detail-card class="detail-card" detail-info="{{detailInfo}}"></turtlebot-detail-card>
         </div>
         
-        <turtlebot-list-table class="list-table" detail-info="{{detailInfo}}" on-show-detail="_showDetail"></turtlebot-list-table>
-
+        <div class="wrapper">
+            <turtlebot-list-table id="turtlebotListTable" class="list-table" detail-info="{{detailInfo}}" on-show-detail="_showDetail"></turtlebot-list-table>
+        </div>
+        
+        <paper-button id="refresh-table" on-click="_refreshTable">Refresh</paper-button>
     </template>
     
     <script>
@@ -49,6 +57,21 @@
                     this.$.detailCard.hidden = false;
                 }
                 this.detailInfo = e.detail;
+            }
+            _refreshTable(e) {
+                // Select tutlebot table
+                var element = this.$.turtlebotListTable;
+
+                // Clone turtlebot table
+                var newElement = element.cloneNode(true);
+                for(var i in element.properties) {
+                    newElement[i] = element[i];
+                }
+
+                // Replace the old turtlebot table with new one
+                element.parentNode.appendChild(newElement);
+                element.remove();
+                this.$.turtlebotListTable = newElement;
             }
         }
         window.customElements.define(TurtlebotList.is, TurtlebotList);

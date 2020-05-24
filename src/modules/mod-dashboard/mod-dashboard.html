@@ -54,9 +54,6 @@
 
                 <!-- display all the maps scanned by turtlebots -->
                 <map-gallery name="maps"></map-gallery>
-
-                <!-- display the information of the ros system -->
-                <ros-core name="systems"></ros-core>
             </iron-pages>
         </div>
     </template>
@@ -88,13 +85,10 @@
                 this.view = view || 'list';
             }
             _pageChanged(view) {
-                this.dashboardTitle = view.toUpperCase();
-
                 if (!view) {
                     return;
                 }
-
-                var resolvedPageUrl = '';
+                var resolvedPageUrl = null;
                 // Load page import on demand. Show 404 page if fails
                 switch (view) {
                     case 'list':
@@ -106,13 +100,14 @@
                     default:
                         resolvedPageUrl = null;
                 }
-                
                 Polymer.importHref(
                     resolvedPageUrl,
                     null,
                     this._showPage404.bind(this),
                     true
                 );
+                this.dashboardTitle = view.toUpperCase();
+
             }
             _showPage404() {
                 this.page = '404';

@@ -69,7 +69,8 @@
                 return {
                     view:{
                         type: String,
-                        observer: '_getRobotId'
+                        observer: '_getRobotId',
+                        value: ""
                     },
                     route: Object,
                     routeData: Object,
@@ -86,7 +87,7 @@
                         "background": "#111111",
                         "colladaLoader": "collada2",
                         "colladaServer": "http://localhost:8001/",
-                        "fixedFrame": "/turtlebot_service/robot/"+this.robotId+"/map",
+                        "fixedFrame": "/turtlebot_service/robot/"+this.robotId+"/odom",
                         "url": "ws://localhost:9090",
                         "videoServer": "http://localhost:9999"
                     },
@@ -126,14 +127,6 @@
                             },
                             "type": "urdf"
                         },
-                        // {
-                        //     "isShown": true,
-                        //     "name": "Interactive Markers",
-                        //     "options": {
-                        //         "topic": "/map_annotator/map_poses"
-                        //     },
-                        //     "type": "interactiveMarkers"
-                        // }
                     ]
                 };
                 this.$.rviz.config = config;	

@@ -70,6 +70,9 @@
         
         _routerChanged(page) {
             this._authorized();
+
+            // this.page = page;
+            // this.$.appPage.hidden = false;
         }
         _authorized() {
             this.$.serviceAccount.check();

@@ -26,8 +26,11 @@
                 <turtlebot-slam name="slam" route="[[subroute]]"></turtlebot-slam>
 
                 <!-- run Navigation control mode -->
-                <turtlebot-navigation name="navigation" route="[[subroute]]"></turtlebot-navigation>
-            
+                <turtlebot-navigation name="navigation"></turtlebot-navigation>
+
+                <!-- run Workflow control mode -->
+                <turtlebot-workflow name="workflow"></turtlebot-workflow>
+
                 <!-- Not found -->
                 <div name="404">
                     <h3>app-bootstrap::Page could not be found!{{page}}</h3>

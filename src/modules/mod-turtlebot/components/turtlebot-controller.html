@@ -53,7 +53,7 @@
         <ros-topic
                 id="cmdVelTopic"
                 ros="{{ros}}"
-                topic="/cmd_vel"
+                topic="{{cmdVelTopic}}"
                 msg-type="geometry_msgs/Twist"
         ></ros-topic>
 
@@ -93,7 +93,9 @@
             static get properties() {
                 return {
                     turtlebotId:{
-                        type: String
+                        type: String,
+                        observer: '_getRobotId',
+                        value: ""
                     },
                     runSpeed: {
                         type: Number,
@@ -102,8 +104,20 @@
                     turnSpeed: {
                         type: Number,
                         value: 1
+                    },
+                    cmdVelTopic: {
+                        type: String
                     }
                 };
+            }
+
+            _getRobotId(turtlebotId) {
+                if (turtlebotId.length > 0) {
+                    this.cmdVelTopic = "/turtlebot_service/robot/" + turtlebotId + "/cmd_vel";
+                } else {
+                    this.cmdVelTopic = "/cmd_vel";
+                }
+                console.log(this.cmdVelTopic);
             }
 
             _stop(evt) {
